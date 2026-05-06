@@ -1,0 +1,16 @@
+Isso aqui é MUITO poderoso.
+
+Você pode literalmente ensinar o comportamento esperado do agente.
+
+Exemplo:
+
+# Regras do projeto
+
+- Sempre usar Clean Architecture
+- Nunca acessar repository diretamente da controller
+- Toda regra de negócio deve ficar no domínio
+- Todo endpoint deve ter DTO
+- Toda migration deve ser versionada
+- Nunca usar lógica inline em views
+
+A IA passa a seguir isso consistentemente.

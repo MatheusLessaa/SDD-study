@@ -1,0 +1,10 @@
+Contém:
+
+regras completas;
+requisitos;
+comportamento esperado;
+UX;
+entidades;
+escopo.
+
+É o “contrato” do projeto.

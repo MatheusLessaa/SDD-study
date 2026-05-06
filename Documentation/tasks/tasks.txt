@@ -1,0 +1,7 @@
+Contém:
+
+tarefas pequenas;
+backlog;
+progresso;
+checklist;
+prompts prontos para IA.

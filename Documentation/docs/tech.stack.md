@@ -7,7 +7,9 @@
 
 ## Frontend
 
-- React
+- Blazor
+- JavaScript com AJAX
+- Bootstrap
 
 ## Banco
 

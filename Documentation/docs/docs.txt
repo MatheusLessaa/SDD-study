@@ -1,8 +1,0 @@
-Contém conhecimento vivo do sistema.
-
-Exemplo:
-
-arquitetura;
-regras de negócio;
-diagramas;
-decisões técnicas.

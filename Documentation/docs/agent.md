@@ -35,6 +35,29 @@ Nenhuma fase deve ser pulada, exceto quando a tarefa for exclusivamente de leitu
 
 ---
 
+## Pre-Execution Gate
+
+Antes de iniciar qualquer task, o agente deve verificar:
+
+- Existe spec associada?
+- A task está descrita em `tasks.md`?
+- Existem critérios de aceite definidos?
+- A task está aprovada/priorizada?
+
+Se qualquer item estiver ausente, o agente deve parar e informar:
+
+```md
+## Execution Blocker
+
+Não posso iniciar esta task pois:
+
+- [Motivo]
+
+Preciso que isso seja resolvido antes de continuar.
+```
+
+---
+
 # PHASE 1 → Clarification
 
 ## Objetivo
@@ -206,6 +229,10 @@ Validar que a alteração funciona e não quebrou o comportamento esperado.
 - Validação manual descrita, quando testes automatizados não forem possíveis.
 - Conferência dos critérios de aceite da task.
 
+## Test Rule
+
+O agente deve seguir as diretrizes definidas em `docs/testing.md`.
+
 ## Regra sobre testes
 
 Testes reais devem ser criados no formato adequado do projeto, por exemplo:
@@ -235,6 +262,13 @@ Arquivos `.md` podem documentar cenários de teste e critérios de aceite, mas n
 
 ### Notes
 - [Limitações, pendências ou observações]
+
+### Post-validation feedback
+- Status: [Sucesso / Falha / Parcial]
+- Confiança: [Alta / Média / Baixa]
+- Cobertura da task: [% estimado]
+- Pendências:
+  - [...]
 ```
 
 Se o agente não conseguir executar algum teste, deve informar claramente:
@@ -437,4 +471,4 @@ Sempre trate o usuário como o aprovador final das decisões de produto, arquite
 
 O agente pode sugerir caminhos técnicos, mas não deve assumir decisões importantes sem aprovação.
 
-O objetivo é desenvolver com
+O objetivo é desenvolver com segurança, clareza e rastreabilidade, seguindo o fluxo de SDD definido neste arquivo.

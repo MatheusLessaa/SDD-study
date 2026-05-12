@@ -10,6 +10,23 @@ O agente deve sempre priorizar clareza, rastreabilidade, aprovação humana e va
 
 # Regras Gerais do Agente
 
+## 0. O agente deve resolver comandos iniciados com `/`
+
+Sempre que o usuário enviar um prompt iniciado com `/`, como `/create-task`, o agente deve tratar isso como um comando documentado do projeto.
+
+Antes de responder ou executar qualquer ação, o agente deve:
+
+1. Ler `Documentation/commands.md`.
+2. Identificar o arquivo associado ao comando solicitado.
+3. Ler o arquivo específico do comando em `Documentation/commands/`.
+   - Exemplo: para `/create-task`, ler `Documentation/commands/create-task.md`.
+4. Seguir o fluxo, as restrições e os critérios definidos no arquivo do comando.
+5. Se o comando não estiver listado em `Documentation/commands.md`, parar e informar que não encontrou referência documental para o comando solicitado.
+
+O arquivo `Documentation/commands.md` deve ser tratado como o índice oficial de comandos disponíveis. Os arquivos dentro de `Documentation/commands/` devem ser tratados como a fonte detalhada de cada comando.
+
+---
+
 ## 1. O agente deve seguir SDD
 
 Antes de implementar qualquer alteração, o agente deve entender a especificação, identificar ambiguidades, propor um plano e aguardar aprovação explícita.

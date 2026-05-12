@@ -263,6 +263,14 @@ a {
     grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr) auto auto;
 }
 
+.games-filters-grid {
+    grid-template-columns: minmax(90px, 0.45fr) minmax(190px, 1fr) minmax(190px, 1fr) minmax(120px, 0.55fr) minmax(140px, 0.65fr);
+}
+
+.match-filters-grid {
+    grid-template-columns: minmax(120px, 0.45fr) minmax(180px, 0.8fr) auto;
+}
+
 .form-field {
     display: grid;
     gap: 8px;
@@ -276,7 +284,8 @@ a {
     letter-spacing: 0;
 }
 
-.form-field input {
+.form-field input,
+.form-field select {
     background: var(--surface-muted);
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -287,7 +296,8 @@ a {
     width: 100%;
 }
 
-.form-field input:focus {
+.form-field input:focus,
+.form-field select:focus {
     border-color: var(--secondary-container);
     box-shadow: 0 0 0 3px rgba(33, 112, 228, 0.18);
     outline: none;
@@ -567,6 +577,10 @@ a {
     width: 100%;
 }
 
+.compact-card {
+    max-width: none;
+}
+
 .form-card-header {
     margin-bottom: 24px;
 }
@@ -587,6 +601,15 @@ a {
     gap: 20px;
 }
 
+.form-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.form-grid.two-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .form-actions {
     justify-content: flex-end;
     margin-top: 8px;
@@ -596,6 +619,233 @@ a {
 .field-validation {
     color: #ba1a1a;
     font-size: 13px;
+}
+
+.match-create-grid {
+    align-items: start;
+    display: grid;
+    gap: 24px;
+    grid-template-columns: minmax(280px, 0.55fr) minmax(0, 1fr);
+}
+
+.match-side-panel {
+    display: grid;
+    gap: 24px;
+}
+
+.match-visual-panel {
+    align-items: center;
+    background: var(--primary-container);
+    border-radius: 8px;
+    color: var(--on-primary-strong);
+    display: grid;
+    gap: 8px;
+    justify-items: center;
+    margin-top: 24px;
+    min-height: 180px;
+    padding: 24px;
+}
+
+.match-visual-panel .material-symbols-outlined {
+    color: var(--secondary-container);
+    font-size: 56px;
+}
+
+.locked-match-summary {
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: grid;
+    gap: 1px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0 0 24px;
+    overflow: hidden;
+}
+
+.locked-match-summary div {
+    background: var(--surface);
+    padding: 14px 16px;
+}
+
+.locked-match-summary dt {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    margin: 0 0 4px;
+    text-transform: uppercase;
+}
+
+.locked-match-summary dd {
+    color: var(--ink);
+    font-weight: 800;
+    margin: 0;
+}
+
+.input-with-action {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.field-hint {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.selected-player-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.selected-player-chip {
+    background: #d8e2ff;
+    border-radius: 999px;
+    color: #004395;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 6px 10px;
+}
+
+.scores-editor {
+    display: grid;
+    gap: 10px;
+}
+
+.selected-player-score {
+    align-items: center;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(0, 1fr) 120px;
+    padding: 10px 12px;
+}
+
+.selected-player-score span {
+    font-weight: 800;
+}
+
+.selected-player-score input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--ink);
+    font: inherit;
+    min-height: 38px;
+    padding: 8px 10px;
+    width: 100%;
+}
+
+.selected-player-score input:focus {
+    border-color: var(--secondary-container);
+    box-shadow: 0 0 0 3px rgba(33, 112, 228, 0.18);
+    outline: none;
+}
+
+.modal-backdrop {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.52);
+    backdrop-filter: blur(4px);
+    display: flex;
+    inset: 0;
+    justify-content: center;
+    padding: 24px;
+    position: fixed;
+    z-index: 100;
+}
+
+.modal-backdrop[hidden] {
+    display: none;
+}
+
+.modal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.32);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    max-width: 560px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.modal-header,
+.modal-footer {
+    align-items: center;
+    background: var(--surface-muted);
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 24px;
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-header h2 {
+    font-size: 18px;
+    line-height: 1.3;
+    margin: 0;
+}
+
+.modal-search {
+    padding: 24px 24px 0;
+}
+
+.modal-list {
+    display: grid;
+    gap: 8px;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.modal-player-row {
+    align-items: center;
+    border-radius: 8px;
+    cursor: pointer;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    padding: 12px;
+}
+
+.modal-player-row:hover,
+.modal-player-row:focus-within {
+    background: var(--surface-muted);
+}
+
+.modal-player-row strong,
+.modal-player-row small {
+    display: block;
+}
+
+.modal-player-row small {
+    color: var(--muted);
+}
+
+.modal-player-row input {
+    accent-color: var(--secondary-container);
+    height: 18px;
+    width: 18px;
+}
+
+.modal-error {
+    color: #ba1a1a;
+    font-size: 13px;
+    margin: 0;
+    min-height: 20px;
+    padding: 0 24px 12px;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border);
+    gap: 12px;
+    justify-content: flex-end;
 }
 
 @media (max-width: 820px) {
@@ -653,11 +903,22 @@ a {
         grid-template-columns: 1fr;
     }
 
+    .games-filters-grid,
+    .match-filters-grid,
+    .match-create-grid,
+    .locked-match-summary,
+    .selected-player-score,
+    .form-grid.two-columns {
+        grid-template-columns: 1fr;
+    }
+
     .filter-actions,
     .form-actions,
-    .table-footer {
+    .table-footer,
+    .input-with-action {
         align-items: stretch;
         flex-direction: column;
+        grid-template-columns: 1fr;
     }
 
     .filter-actions .primary-button,

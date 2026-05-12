@@ -103,7 +103,7 @@ public class MatchRepositoryTests
     }
 
     [Fact]
-    public async Task List_uses_fixed_page_size_of_twenty()
+    public async Task List_uses_fixed_page_size_of_twenty_and_returns_requested_page()
     {
         await using var dbContext = CreateDbContext();
         var repository = new MatchRepository(dbContext);
@@ -120,6 +120,8 @@ public class MatchRepositoryTests
         Assert.Equal(5, secondPage.Items.Count);
         Assert.Equal(25, firstPage.TotalCount);
         Assert.Equal(20, firstPage.PageSize);
+        Assert.Equal(2, secondPage.Page);
+        Assert.True(firstPage.Items[0].Id > secondPage.Items[0].Id);
     }
 
     private static Match CreateMatch(int gameId)

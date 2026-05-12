@@ -95,6 +95,9 @@ public class AppDbContext : DbContext
             entity.Property(match => match.Scores)
                 .IsRequired();
 
+            entity.Property(match => match.CreatedAt)
+                .IsRequired();
+
             entity.HasOne<Game>()
                 .WithMany()
                 .HasForeignKey(match => match.GameId)

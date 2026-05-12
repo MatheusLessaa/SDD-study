@@ -11,4 +11,6 @@ public class Match : Entity
     public string Scores { get; set; } = string.Empty;
 
     public int WinnerPlayerId { get; set; }
+
+    public DateTime CreatedAt { get; set; }
 }

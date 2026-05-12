@@ -7,7 +7,8 @@ public sealed record MatchViewDto(
     int GameId,
     string PlayerIds,
     string Scores,
-    int WinnerPlayerId)
+    int WinnerPlayerId,
+    DateTime CreatedAt)
 {
     public static MatchViewDto FromEntity(Match match)
     {
@@ -16,6 +17,7 @@ public sealed record MatchViewDto(
             match.GameId,
             match.PlayerIds,
             match.Scores,
-            match.WinnerPlayerId);
+            match.WinnerPlayerId,
+            match.CreatedAt);
     }
 }

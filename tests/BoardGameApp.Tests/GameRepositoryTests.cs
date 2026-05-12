@@ -95,6 +95,81 @@ public class GameRepositoryTests
     }
 
     [Fact]
+    public async Task List_filters_by_id()
+    {
+        await using var dbContext = CreateDbContext();
+        await SeedSupportingDataAsync(dbContext);
+        var repository = new GameRepository(dbContext);
+        var target = await repository.CreateAsync(CreateGame("Target Game", 1, 1));
+        await repository.CreateAsync(CreateGame("Other Game", 1, 1));
+
+        var result = await repository.ListAsync(new GameFilter(Id: target.Id));
+
+        Assert.Single(result.Items);
+        Assert.Equal(target.Id, result.Items[0].Id);
+    }
+
+    [Fact]
+    public async Task List_filters_by_name()
+    {
+        await using var dbContext = CreateDbContext();
+        await SeedSupportingDataAsync(dbContext);
+        var repository = new GameRepository(dbContext);
+        await repository.CreateAsync(CreateGame("Azul", 1, 1));
+        await repository.CreateAsync(CreateGame("Catan", 1, 1));
+
+        var result = await repository.ListAsync(new GameFilter(Name: "Az"));
+
+        Assert.Single(result.Items);
+        Assert.Equal("Azul", result.Items[0].Name);
+    }
+
+    [Fact]
+    public async Task List_filters_by_author()
+    {
+        await using var dbContext = CreateDbContext();
+        await SeedSupportingDataAsync(dbContext);
+        var repository = new GameRepository(dbContext);
+        await repository.CreateAsync(CreateGame("Azul", 1, 1, "Michael Kiesling"));
+        await repository.CreateAsync(CreateGame("Catan", 1, 1, "Klaus Teuber"));
+
+        var result = await repository.ListAsync(new GameFilter(Author: "Klaus"));
+
+        Assert.Single(result.Items);
+        Assert.Equal("Catan", result.Items[0].Name);
+    }
+
+    [Fact]
+    public async Task List_filters_by_genre()
+    {
+        await using var dbContext = CreateDbContext();
+        await SeedSupportingDataAsync(dbContext);
+        var repository = new GameRepository(dbContext);
+        await repository.CreateAsync(CreateGame("Azul", 1, 1));
+        await repository.CreateAsync(CreateGame("Catan", 1, 2));
+
+        var result = await repository.ListAsync(new GameFilter(GenreId: 2));
+
+        Assert.Single(result.Items);
+        Assert.Equal("Catan", result.Items[0].Name);
+    }
+
+    [Fact]
+    public async Task List_filters_by_publisher()
+    {
+        await using var dbContext = CreateDbContext();
+        await SeedSupportingDataAsync(dbContext);
+        var repository = new GameRepository(dbContext);
+        await repository.CreateAsync(CreateGame("Azul", 1, 1));
+        await repository.CreateAsync(CreateGame("Catan", 2, 1));
+
+        var result = await repository.ListAsync(new GameFilter(PublisherId: 2));
+
+        Assert.Single(result.Items);
+        Assert.Equal("Catan", result.Items[0].Name);
+    }
+
+    [Fact]
     public async Task List_applies_filters_together()
     {
         await using var dbContext = CreateDbContext();
@@ -115,22 +190,7 @@ public class GameRepositoryTests
     }
 
     [Fact]
-    public async Task List_filters_by_id()
-    {
-        await using var dbContext = CreateDbContext();
-        await SeedSupportingDataAsync(dbContext);
-        var repository = new GameRepository(dbContext);
-        var target = await repository.CreateAsync(CreateGame("Target Game", 1, 1));
-        await repository.CreateAsync(CreateGame("Other Game", 1, 1));
-
-        var result = await repository.ListAsync(new GameFilter(Id: target.Id));
-
-        Assert.Single(result.Items);
-        Assert.Equal(target.Id, result.Items[0].Id);
-    }
-
-    [Fact]
-    public async Task List_uses_fixed_page_size_of_twenty()
+    public async Task List_uses_fixed_page_size_of_twenty_and_returns_requested_page()
     {
         await using var dbContext = CreateDbContext();
         await SeedSupportingDataAsync(dbContext);
@@ -148,6 +208,8 @@ public class GameRepositoryTests
         Assert.Equal(5, secondPage.Items.Count);
         Assert.Equal(25, firstPage.TotalCount);
         Assert.Equal(20, firstPage.PageSize);
+        Assert.Equal(2, secondPage.Page);
+        Assert.Equal("Game 21", secondPage.Items[0].Name);
     }
 
     private static Game CreateGame(

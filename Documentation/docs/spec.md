@@ -46,7 +46,7 @@ Each context is **isolated and self-contained**.
 | -------- | ------ | ---------------- |
 | Id       | INT    | Primary Key      |
 | FullName | STRING | Required, UNIQUE |
-| WhatsApp | STRING | Required, UNIQUE |
+| WhatsApp | STRING | Required, UNIQUE, Brazilian phone format |
 | IsActive | BOOL   | Default: true    |
 
 ---
@@ -55,6 +55,14 @@ Each context is **isolated and self-contained**.
 
 * FullName must be unique
 * WhatsApp must be unique
+* WhatsApp must use the Brazilian phone layout when displayed or entered in the UI.
+* The UI must automatically apply the Brazilian phone mask while the user types.
+* Accepted raw digit lengths:
+  * 10 digits: 2-digit state/area code + 8-digit phone.
+  * 11 digits: 2-digit state/area code + 9-digit phone.
+* Expected WhatsApp display/input formats:
+  * 8-digit phone: `(32) 1111-1111`.
+  * 9-digit phone: `(32) 9 1111-1111`.
 * Players cannot be physically deleted
 * Deletion = set `IsActive = false`
 * Inactive players:
@@ -103,6 +111,7 @@ Each context is **isolated and self-contained**.
 ### 5.2 Business Rules
 
 * Name + PublisherId must be unique
+* TimesPlayed must increment by 1 whenever a new match is successfully created for the game.
 * Games cannot be deleted
 * Deletion = set `IsActive = false`
 * Inactive games:
@@ -115,6 +124,7 @@ Each context is **isolated and self-contained**.
 ### 5.3 Features
 
 * List games (max 20 per page)
+* Games list must display Publisher and Genre names, not only their FK IDs.
 * Filters:
 
   * Name (partial)
@@ -144,6 +154,7 @@ Each context is **isolated and self-contained**.
 | PlayerIds      | STRING | Comma-separated (e.g., "1,5,8")  |
 | Scores         | STRING | Comma-separated (e.g., "10,7,3") |
 | WinnerPlayerId | INT    | FK                               |
+| CreatedAt      | DATETIME | Required, set automatically on create |
 
 ---
 
@@ -172,6 +183,8 @@ Each context is **isolated and self-contained**.
 
 * A match must contain at least 1 player
 * Number of players must not exceed Game.MaxPlayers
+* CreatedAt must be set by the system when the match is created.
+* CreatedAt must not be changed when editing match scores.
 * WinnerPlayerId must:
 
   * Exist in PlayerIds list
@@ -220,6 +233,8 @@ Each context is **isolated and self-contained**.
   * Edit (scores only)
   * Delete [NEED CLARIFICATION: hard delete vs soft delete]
 
+* The match list must display the match creation date/time.
+
 ---
 
 ### 6.6 Create Match Flow
@@ -232,6 +247,8 @@ Each context is **isolated and self-contained**.
    * Respect MaxPlayers
 4. Input Scores (optional → default = 0)
 5. System calculates Winner automatically
+6. System stores CreatedAt using the current server time
+7. System increments the selected Game.TimesPlayed by 1
 
 ---
 

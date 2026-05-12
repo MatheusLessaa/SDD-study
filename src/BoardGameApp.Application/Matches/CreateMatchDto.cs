@@ -15,7 +15,8 @@ public sealed record CreateMatchDto(
             GameId = GameId,
             PlayerIds = PlayerIds,
             Scores = Scores,
-            WinnerPlayerId = WinnerPlayerId
+            WinnerPlayerId = WinnerPlayerId,
+            CreatedAt = DateTime.Now
         };
     }
 }

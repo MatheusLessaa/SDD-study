@@ -10,11 +10,11 @@ public class PlayerServiceTests
     public async Task Create_enforces_unique_full_name()
     {
         var repository = new FakePlayerRepository();
-        await repository.CreateAsync(new Player { FullName = "Ada Lovelace", WhatsApp = "1111" });
+        await repository.CreateAsync(new Player { FullName = "Ada Lovelace", WhatsApp = "(32) 9 1111-1111" });
         var service = new PlayerService(repository);
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            service.CreateAsync(new CreatePlayerDto("Ada Lovelace", "2222")));
+            service.CreateAsync(new CreatePlayerDto("Ada Lovelace", "(32) 9 2222-2222")));
 
         Assert.Contains("full name", exception.Message);
     }
@@ -23,53 +23,104 @@ public class PlayerServiceTests
     public async Task Create_enforces_unique_whatsapp()
     {
         var repository = new FakePlayerRepository();
-        await repository.CreateAsync(new Player { FullName = "Ada Lovelace", WhatsApp = "1111" });
+        await repository.CreateAsync(new Player { FullName = "Ada Lovelace", WhatsApp = "(32) 9 1111-1111" });
         var service = new PlayerService(repository);
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            service.CreateAsync(new CreatePlayerDto("Grace Hopper", "1111")));
+            service.CreateAsync(new CreatePlayerDto("Grace Hopper", "(32) 9 1111-1111")));
 
         Assert.Contains("WhatsApp", exception.Message);
     }
 
     [Fact]
-    public async Task Create_returns_view_dto_when_player_is_valid()
+    public async Task Create_returns_view_dto_when_player_has_nine_digit_phone()
     {
         var repository = new FakePlayerRepository();
         var service = new PlayerService(repository);
 
-        var created = await service.CreateAsync(new CreatePlayerDto("Grace Hopper", "3333"));
+        var created = await service.CreateAsync(new CreatePlayerDto("Grace Hopper", "(32) 9 3333-3333"));
 
         Assert.Equal(1, created.Id);
         Assert.Equal("Grace Hopper", created.FullName);
-        Assert.Equal("3333", created.WhatsApp);
+        Assert.Equal("(32) 9 3333-3333", created.WhatsApp);
         Assert.True(created.IsActive);
+    }
+
+    [Fact]
+    public async Task Create_returns_view_dto_when_player_has_eight_digit_phone()
+    {
+        var repository = new FakePlayerRepository();
+        var service = new PlayerService(repository);
+
+        var created = await service.CreateAsync(new CreatePlayerDto("Grace Hopper", "(32) 3333-3333"));
+
+        Assert.Equal(1, created.Id);
+        Assert.Equal("Grace Hopper", created.FullName);
+        Assert.Equal("(32) 3333-3333", created.WhatsApp);
+        Assert.True(created.IsActive);
+    }
+
+    [Fact]
+    public async Task Create_rejects_non_brazilian_whatsapp_format()
+    {
+        var repository = new FakePlayerRepository();
+        var service = new PlayerService(repository);
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            service.CreateAsync(new CreatePlayerDto("Grace Hopper", "+1 (555) 123-4567")));
+
+        Assert.Contains("Brazilian format", exception.Message);
+    }
+
+    [Fact]
+    public async Task Create_rejects_incomplete_brazilian_whatsapp_format()
+    {
+        var repository = new FakePlayerRepository();
+        var service = new PlayerService(repository);
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            service.CreateAsync(new CreatePlayerDto("Grace Hopper", "(32) 9111-111")));
+
+        Assert.Contains("Brazilian format", exception.Message);
     }
 
     [Fact]
     public async Task Update_allows_same_player_to_keep_full_name_and_whatsapp()
     {
         var repository = new FakePlayerRepository();
-        var player = await repository.CreateAsync(new Player { FullName = "Before", WhatsApp = "4444" });
+        var player = await repository.CreateAsync(new Player { FullName = "Before", WhatsApp = "(32) 9 4444-4444" });
         var service = new PlayerService(repository);
 
-        var updated = await service.UpdateAsync(new UpdatePlayerDto(player.Id, "Before", "4444", true));
+        var updated = await service.UpdateAsync(new UpdatePlayerDto(player.Id, "Before", "(32) 9 4444-4444", true));
 
         Assert.Equal(player.Id, updated.Id);
         Assert.Equal("Before", updated.FullName);
-        Assert.Equal("4444", updated.WhatsApp);
+        Assert.Equal("(32) 9 4444-4444", updated.WhatsApp);
+    }
+
+    [Fact]
+    public async Task Update_rejects_non_brazilian_whatsapp_format()
+    {
+        var repository = new FakePlayerRepository();
+        var player = await repository.CreateAsync(new Player { FullName = "Before", WhatsApp = "(32) 9 4444-4444" });
+        var service = new PlayerService(repository);
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            service.UpdateAsync(new UpdatePlayerDto(player.Id, "Before", "555", true)));
+
+        Assert.Contains("Brazilian format", exception.Message);
     }
 
     [Fact]
     public async Task Update_enforces_unique_full_name_against_other_players()
     {
         var repository = new FakePlayerRepository();
-        await repository.CreateAsync(new Player { FullName = "Existing", WhatsApp = "5555" });
-        var target = await repository.CreateAsync(new Player { FullName = "Target", WhatsApp = "6666" });
+        await repository.CreateAsync(new Player { FullName = "Existing", WhatsApp = "(32) 9 5555-5555" });
+        var target = await repository.CreateAsync(new Player { FullName = "Target", WhatsApp = "(32) 9 6666-6666" });
         var service = new PlayerService(repository);
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            service.UpdateAsync(new UpdatePlayerDto(target.Id, "Existing", "6666", true)));
+            service.UpdateAsync(new UpdatePlayerDto(target.Id, "Existing", "(32) 9 6666-6666", true)));
 
         Assert.Contains("full name", exception.Message);
     }
@@ -78,7 +129,7 @@ public class PlayerServiceTests
     public async Task Deactivate_marks_player_inactive_without_hard_delete()
     {
         var repository = new FakePlayerRepository();
-        var player = await repository.CreateAsync(new Player { FullName = "Target", WhatsApp = "7777" });
+        var player = await repository.CreateAsync(new Player { FullName = "Target", WhatsApp = "(32) 9 7777-7777" });
         var service = new PlayerService(repository);
 
         await service.DeactivateAsync(player.Id);
@@ -102,7 +153,7 @@ public class PlayerServiceTests
     public async Task List_maps_repository_entities_to_view_dtos()
     {
         var repository = new FakePlayerRepository();
-        await repository.CreateAsync(new Player { FullName = "Ada Lovelace", WhatsApp = "1111" });
+        await repository.CreateAsync(new Player { FullName = "Ada Lovelace", WhatsApp = "(32) 9 1111-1111" });
         var service = new PlayerService(repository);
 
         var result = await service.ListAsync(new PlayerFilter());

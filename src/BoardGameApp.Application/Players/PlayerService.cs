@@ -4,6 +4,8 @@ namespace BoardGameApp.Application.Players;
 
 public sealed class PlayerService : IPlayerService
 {
+    private const string BrazilianWhatsAppFormatPattern = @"^\(\d{2}\) (?:\d{4}-\d{4}|9 \d{4}-\d{4})$";
+
     private readonly IPlayerRepository playerRepository;
 
     public PlayerService(IPlayerRepository playerRepository)
@@ -15,6 +17,7 @@ public sealed class PlayerService : IPlayerService
         CreatePlayerDto dto,
         CancellationToken cancellationToken = default)
     {
+        EnsureBrazilianWhatsAppFormat(dto.WhatsApp);
         await EnsureUniqueFullNameAsync(dto.FullName, excludingId: null, cancellationToken);
         await EnsureUniqueWhatsAppAsync(dto.WhatsApp, excludingId: null, cancellationToken);
 
@@ -30,6 +33,7 @@ public sealed class PlayerService : IPlayerService
         var player = await playerRepository.GetByIdAsync(dto.Id, cancellationToken)
             ?? throw new InvalidOperationException($"Player with id '{dto.Id}' was not found.");
 
+        EnsureBrazilianWhatsAppFormat(dto.WhatsApp);
         await EnsureUniqueFullNameAsync(dto.FullName, dto.Id, cancellationToken);
         await EnsureUniqueWhatsAppAsync(dto.WhatsApp, dto.Id, cancellationToken);
 
@@ -98,6 +102,14 @@ public sealed class PlayerService : IPlayerService
         if (await playerRepository.ExistsByWhatsAppAsync(whatsApp, excludingId, cancellationToken))
         {
             throw new InvalidOperationException($"Player WhatsApp '{whatsApp}' is already in use.");
+        }
+    }
+
+    private static void EnsureBrazilianWhatsAppFormat(string whatsApp)
+    {
+        if (!System.Text.RegularExpressions.Regex.IsMatch(whatsApp, BrazilianWhatsAppFormatPattern))
+        {
+            throw new InvalidOperationException("Player WhatsApp must use the Brazilian format '(32) 1111-1111' or '(32) 9 1111-1111'.");
         }
     }
 }

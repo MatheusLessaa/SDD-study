@@ -27,6 +27,18 @@ app.MapAreaControllerRoute(
     pattern: "Players/{action=Index}/{id?}",
     defaults: new { controller = "Player" });
 
+app.MapAreaControllerRoute(
+    name: "games",
+    areaName: "Games",
+    pattern: "Games/{action=Index}/{id?}",
+    defaults: new { controller = "Game" });
+
+app.MapAreaControllerRoute(
+    name: "matches",
+    areaName: "Matches",
+    pattern: "Matches/{action=Index}/{id?}",
+    defaults: new { controller = "Match" });
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

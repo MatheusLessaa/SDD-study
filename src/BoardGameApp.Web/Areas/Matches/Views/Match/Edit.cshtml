@@ -1,0 +1,45 @@
+@model MatchEditScoresViewModel
+
+<section class="form-shell">
+    <div class="form-card">
+        <header class="form-card-header">
+            <h2>Edit Match Scores</h2>
+            <p>Only scores can be changed. The game and player list remain locked.</p>
+        </header>
+
+        <dl class="locked-match-summary" aria-label="Locked match details">
+            <div>
+                <dt>Game</dt>
+                <dd>#@Model.Match.GameId</dd>
+            </div>
+            <div>
+                <dt>Players</dt>
+                <dd>@Model.Match.PlayerIds</dd>
+            </div>
+            <div>
+                <dt>Current Winner</dt>
+                <dd>Player #@Model.Match.WinnerPlayerId</dd>
+            </div>
+        </dl>
+
+        <form asp-action="Edit" method="post" class="entity-form">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <input name="Id" type="hidden" value="@Model.ScoreUpdate.Id" />
+
+            <div class="form-field">
+                <label for="Scores">Scores</label>
+                <input id="Scores" name="Scores" value="@Model.ScoreUpdate.Scores" placeholder="10,7,3" autofocus />
+            </div>
+
+            <div class="form-actions">
+                <a class="secondary-button" asp-action="Index">Cancel</a>
+                <button class="primary-button" type="submit">
+                    <span class="material-symbols-outlined" aria-hidden="true">save</span>
+                    <span>Save Scores</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</section>

@@ -16,11 +16,14 @@ public class MatchServiceTests
         var matchRepository = new FakeMatchRepository();
         var service = CreateService(matchRepository, CreateGame(1, maxPlayers: 4));
 
+        var beforeCreate = DateTime.Now;
         var created = await service.CreateAsync(new CreateMatchDto(1, "1, 5, 8", "10, 7, 3", WinnerPlayerId: 999));
+        var afterCreate = DateTime.Now;
 
         Assert.Equal("1,5,8", created.PlayerIds);
         Assert.Equal("10,7,3", created.Scores);
         Assert.Equal(1, created.WinnerPlayerId);
+        Assert.InRange(created.CreatedAt, beforeCreate, afterCreate);
     }
 
     [Fact]
@@ -89,6 +92,35 @@ public class MatchServiceTests
     }
 
     [Fact]
+    public async Task Create_increments_game_times_played_when_match_is_created()
+    {
+        var game = CreateGame(1, maxPlayers: 4);
+        game.TimesPlayed = 2;
+        var gameRepository = new FakeGameRepository(game);
+        var service = new MatchService(new FakeMatchRepository(), gameRepository, CreateDefaultPlayerRepository());
+
+        await service.CreateAsync(new CreateMatchDto(1, "1,2", "5,8", WinnerPlayerId: 999));
+
+        Assert.Equal(3, game.TimesPlayed);
+        Assert.Equal(1, gameRepository.UpdateCallCount);
+    }
+
+    [Fact]
+    public async Task Create_does_not_increment_game_times_played_when_match_creation_fails_validation()
+    {
+        var game = CreateGame(1, maxPlayers: 2);
+        game.TimesPlayed = 2;
+        var gameRepository = new FakeGameRepository(game);
+        var service = new MatchService(new FakeMatchRepository(), gameRepository, CreateDefaultPlayerRepository());
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            service.CreateAsync(new CreateMatchDto(1, "1,2,3", "5,8,1", WinnerPlayerId: 999)));
+
+        Assert.Equal(2, game.TimesPlayed);
+        Assert.Equal(0, gameRepository.UpdateCallCount);
+    }
+
+    [Fact]
     public async Task Create_throws_when_scores_count_does_not_match_players_count()
     {
         var service = CreateService(new FakeMatchRepository(), CreateGame(1, maxPlayers: 4));
@@ -119,7 +151,8 @@ public class MatchServiceTests
             GameId = 1,
             PlayerIds = "1,2",
             Scores = "2,8",
-            WinnerPlayerId = 2
+            WinnerPlayerId = 2,
+            CreatedAt = new DateTime(2026, 5, 12, 18, 30, 0)
         });
         var service = CreateService(matchRepository, CreateGame(1, maxPlayers: 2));
 
@@ -128,6 +161,7 @@ public class MatchServiceTests
         Assert.Single(result.Items);
         Assert.IsType<MatchViewDto>(result.Items[0]);
         Assert.Equal(2, result.Items[0].WinnerPlayerId);
+        Assert.Equal(new DateTime(2026, 5, 12, 18, 30, 0), result.Items[0].CreatedAt);
     }
 
     [Fact]
@@ -139,7 +173,8 @@ public class MatchServiceTests
             GameId = 42,
             PlayerIds = "1,2,3",
             Scores = "2,8,1",
-            WinnerPlayerId = 2
+            WinnerPlayerId = 2,
+            CreatedAt = new DateTime(2026, 5, 12, 18, 30, 0)
         });
         var service = CreateService(matchRepository, CreateGame(42, maxPlayers: 3));
 
@@ -150,6 +185,7 @@ public class MatchServiceTests
         Assert.Equal("1,2,3", updated.PlayerIds);
         Assert.Equal("9,3,7", updated.Scores);
         Assert.Equal(1, updated.WinnerPlayerId);
+        Assert.Equal(new DateTime(2026, 5, 12, 18, 30, 0), updated.CreatedAt);
     }
 
     [Fact]
@@ -254,15 +290,20 @@ public class MatchServiceTests
         return new MatchService(
             matchRepository,
             new FakeGameRepository(games),
-            new FakePlayerRepository(
-                new Player { Id = 1, FullName = "Zoe Player", WhatsApp = "1" },
-                new Player { Id = 2, FullName = "Alice Player", WhatsApp = "2" },
-                new Player { Id = 3, FullName = "Maria Player", WhatsApp = "3" },
-                new Player { Id = 5, FullName = "Bob Player", WhatsApp = "5" },
-                new Player { Id = 8, FullName = "Clara Player", WhatsApp = "8" },
-                new Player { Id = 10, FullName = "Diego Player", WhatsApp = "10" },
-                new Player { Id = 20, FullName = "Eva Player", WhatsApp = "20" },
-                new Player { Id = 30, FullName = "Felipe Player", WhatsApp = "30" }));
+            CreateDefaultPlayerRepository());
+    }
+
+    private static FakePlayerRepository CreateDefaultPlayerRepository()
+    {
+        return new FakePlayerRepository(
+            new Player { Id = 1, FullName = "Zoe Player", WhatsApp = "1" },
+            new Player { Id = 2, FullName = "Alice Player", WhatsApp = "2" },
+            new Player { Id = 3, FullName = "Maria Player", WhatsApp = "3" },
+            new Player { Id = 5, FullName = "Bob Player", WhatsApp = "5" },
+            new Player { Id = 8, FullName = "Clara Player", WhatsApp = "8" },
+            new Player { Id = 10, FullName = "Diego Player", WhatsApp = "10" },
+            new Player { Id = 20, FullName = "Eva Player", WhatsApp = "20" },
+            new Player { Id = 30, FullName = "Felipe Player", WhatsApp = "30" });
     }
 
     private static Game CreateGame(int id, int maxPlayers)

@@ -21,7 +21,7 @@
 
             <div class="form-field">
                 <label asp-for="WhatsApp">WhatsApp</label>
-                <input asp-for="WhatsApp" />
+                <input asp-for="WhatsApp" placeholder="(32) 9 1111-1111" type="tel" inputmode="numeric" maxlength="16" pattern="\(\d{2}\) (\d{4}-\d{4}|9 \d{4}-\d{4})" data-brazilian-phone />
                 <span asp-validation-for="WhatsApp" class="field-validation"></span>
             </div>
 
@@ -40,3 +40,7 @@
         </form>
     </div>
 </section>
+
+@section Scripts {
+    <script src="~/js/player-phone-mask.js" asp-append-version="true"></script>
+}

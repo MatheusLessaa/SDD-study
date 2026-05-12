@@ -41,10 +41,13 @@ public sealed class MatchService : IMatchService
             GameId = dto.GameId,
             PlayerIds = string.Join(",", playerIds),
             Scores = string.Join(",", scores),
-            WinnerPlayerId = winnerPlayerId
+            WinnerPlayerId = winnerPlayerId,
+            CreatedAt = DateTime.Now
         };
 
         var created = await matchRepository.CreateAsync(match, cancellationToken);
+        game.TimesPlayed++;
+        await gameRepository.UpdateAsync(game, cancellationToken);
 
         return MatchViewDto.FromEntity(created);
     }

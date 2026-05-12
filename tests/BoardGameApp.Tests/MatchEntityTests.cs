@@ -14,6 +14,7 @@ public class MatchEntityTests
         Assert.Equal(string.Empty, match.PlayerIds);
         Assert.Equal(string.Empty, match.Scores);
         Assert.Equal(0, match.WinnerPlayerId);
+        Assert.Equal(default, match.CreatedAt);
     }
 
     [Fact]
@@ -25,7 +26,8 @@ public class MatchEntityTests
             GameId = 4,
             PlayerIds = "1,5,8",
             Scores = "10,7,3",
-            WinnerPlayerId = 1
+            WinnerPlayerId = 1,
+            CreatedAt = new DateTime(2026, 5, 12, 18, 30, 0)
         };
 
         Assert.Equal(11, match.Id);
@@ -33,5 +35,6 @@ public class MatchEntityTests
         Assert.Equal("1,5,8", match.PlayerIds);
         Assert.Equal("10,7,3", match.Scores);
         Assert.Equal(1, match.WinnerPlayerId);
+        Assert.Equal(new DateTime(2026, 5, 12, 18, 30, 0), match.CreatedAt);
     }
 }

@@ -86,5 +86,7 @@ public class GameDtoTests
         Assert.Equal(15, dto.TimesPlayed);
         Assert.Equal(4, dto.MaxPlayers);
         Assert.False(dto.IsActive);
+        Assert.Equal("Devir", dto.PublisherName);
+        Assert.Equal("Strategy", dto.GenreName);
     }
 }

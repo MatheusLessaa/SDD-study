@@ -27,7 +27,7 @@
                     <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
                     <span>Dashboard</span>
                 </a>
-                <a class="sidebar-link @(activeNav == "Games" ? "active" : null)" asp-controller="Games" asp-action="Index">
+                <a class="sidebar-link @(activeNav == "Games" ? "active" : null)" asp-area="Games" asp-controller="Game" asp-action="Index">
                     <span class="material-symbols-outlined" aria-hidden="true">stadia_controller</span>
                     <span>Games</span>
                 </a>
@@ -35,14 +35,14 @@
                     <span class="material-symbols-outlined" aria-hidden="true">groups</span>
                     <span>Players</span>
                 </a>
-                <a class="sidebar-link @(activeNav == "Matches" ? "active" : null)" asp-controller="Matches" asp-action="Index">
+                <a class="sidebar-link @(activeNav == "Matches" ? "active" : null)" asp-area="Matches" asp-controller="Match" asp-action="Index">
                     <span class="material-symbols-outlined" aria-hidden="true">history</span>
                     <span>Matches</span>
                 </a>
             </nav>
 
             <div class="sidebar-footer">
-                <a class="new-match-link" asp-controller="Matches" asp-action="Create">
+                <a class="new-match-link" asp-area="Matches" asp-controller="Match" asp-action="Create">
                     <span class="material-symbols-outlined" aria-hidden="true">add</span>
                     <span>New Match</span>
                 </a>

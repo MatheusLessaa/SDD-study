@@ -43,6 +43,8 @@ public class GameServiceTests
         Assert.Equal("Azul", created.Name);
         Assert.Equal(1, created.PublisherId);
         Assert.Equal(2, created.GenreId);
+        Assert.Equal("Galapagos", created.PublisherName);
+        Assert.Equal("Family", created.GenreName);
         Assert.Equal("Michael Kiesling", created.Author);
         Assert.Equal(4, created.MaxPlayers);
         Assert.True(created.IsActive);
@@ -135,6 +137,8 @@ public class GameServiceTests
         Assert.Single(result.Items);
         Assert.IsType<GameViewDto>(result.Items[0]);
         Assert.Equal("Azul", result.Items[0].Name);
+        Assert.Equal("Galapagos", result.Items[0].PublisherName);
+        Assert.Equal("Strategy", result.Items[0].GenreName);
     }
 
     private static Game CreateGame(string name, int publisherId, bool isActive = true)

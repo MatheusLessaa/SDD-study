@@ -443,3 +443,73 @@ Every task must satisfy:
 * ✔ Tests pass (when applicable)
 
 ---
+
+# 7. Improvements
+
+## Task 7.1 — Update Player Phone Layout to Brazilian Format
+
+**Acceptance Criteria**
+
+* ✔ Player phone/WhatsApp input uses the Brazilian phone layout.
+* ✔ Expected layout example: `(32) 9 1111-1111`.
+* ✔ Player list displays phone/WhatsApp values using the Brazilian layout.
+* ✔ Player phone/WhatsApp filter placeholder uses the Brazilian layout.
+* ✔ Existing uniqueness rule for `WhatsApp` remains preserved.
+* ✔ Tests cover valid Brazilian phone values and relevant invalid formats.
+
+---
+
+## Task 7.2 — Add Automatic Brazilian Phone Mask to Player Fields
+
+**Acceptance Criteria**
+
+* ✔ Player create WhatsApp field auto-formats raw digits while typing.
+* ✔ Player edit WhatsApp field auto-formats raw digits while typing.
+* ✔ The field accepts 10 or 11 digits total.
+* ✔ 10 digits are formatted as `(32) 1111-1111`.
+* ✔ 11 digits are formatted as `(32) 9 1111-1111`.
+* ✔ Incomplete or unsupported phone lengths are rejected by validation.
+* ✔ Existing uniqueness rule for `WhatsApp` remains preserved.
+* ✔ Tests cover both 10-digit and 11-digit Brazilian phone values.
+
+---
+
+## Task 7.3 — Add Match Creation Timestamp
+
+**Acceptance Criteria**
+
+* ✔ Match entity includes a required `CreatedAt` field.
+* ✔ New matches set `CreatedAt` from the current server time when created.
+* ✔ Match creation input does not require users to provide `CreatedAt`.
+* ✔ Match view/list DTO exposes `CreatedAt`.
+* ✔ Match table displays the match creation date/time.
+* ✔ Editing match scores does not change `CreatedAt`.
+* ✔ Database schema is updated with a migration.
+* ✔ Tests cover timestamp creation and preservation during score edits.
+
+---
+
+## Task 7.4 — Display Genre and Publisher Names in Games Table
+
+**Acceptance Criteria**
+
+* ✔ Games table displays the genre name instead of `GenreId`.
+* ✔ Games table displays the publisher name instead of `PublisherId`.
+* ✔ Game create/edit flow continues to store FK IDs.
+* ✔ Game list DTO or view model exposes genre and publisher display names.
+* ✔ Existing game filters continue to work.
+* ✔ Tests cover genre and publisher names in game list data.
+
+---
+
+## Task 7.5 — Increment Game Times Played on Match Creation
+
+**Acceptance Criteria**
+
+* ✔ Creating a match increments the selected Game `TimesPlayed` by 1.
+* ✔ Failed match creation does not increment `TimesPlayed`.
+* ✔ Editing match scores does not change `TimesPlayed`.
+* ✔ Existing match validation behavior remains unchanged.
+* ✔ Tests cover successful increment and non-increment cases.
+
+---

@@ -1,0 +1,206 @@
+@model GameIndexViewModel
+
+@{
+    var hasFilters = Model.Id.HasValue
+        || !string.IsNullOrWhiteSpace(Model.Name)
+        || !string.IsNullOrWhiteSpace(Model.Author)
+        || Model.GenreId.HasValue
+        || Model.PublisherId.HasValue
+        || Model.IncludeInactive;
+}
+
+<section class="filters-panel" aria-label="Game filters">
+    <form asp-action="Index" method="get" class="filters-grid games-filters-grid">
+        <div class="form-field">
+            <label for="id">Game Id</label>
+            <input id="id" name="id" type="number" min="1" value="@Model.Id" placeholder="Id" />
+        </div>
+
+        <div class="form-field">
+            <label for="name">Search by Name</label>
+            <div class="input-with-icon">
+                <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                <input id="name" name="name" value="@Model.Name" placeholder="Enter game name..." />
+            </div>
+        </div>
+
+        <div class="form-field">
+            <label for="author">Search by Author</label>
+            <div class="input-with-icon">
+                <span class="material-symbols-outlined" aria-hidden="true">person</span>
+                <input id="author" name="author" value="@Model.Author" placeholder="Enter author..." />
+            </div>
+        </div>
+
+        <div class="form-field">
+            <label for="genreId">Genre Id</label>
+            <input id="genreId" name="genreId" type="number" min="1" value="@Model.GenreId" placeholder="Genre" />
+        </div>
+
+        <div class="form-field">
+            <label for="publisherId">Publisher Id</label>
+            <input id="publisherId" name="publisherId" type="number" min="1" value="@Model.PublisherId" placeholder="Publisher" />
+        </div>
+
+        <label class="checkbox-field">
+            <input type="checkbox" name="includeInactive" value="true" checked="@Model.IncludeInactive" />
+            <span>Include inactive</span>
+        </label>
+
+        <div class="filter-actions">
+            <button class="primary-button" type="submit">
+                <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                <span>Search</span>
+            </button>
+            @if (hasFilters)
+            {
+                <a class="secondary-button" asp-action="Index">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                    <span>Clear</span>
+                </a>
+            }
+            <a class="primary-button" asp-action="Create">
+                <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                <span>Add Game</span>
+            </a>
+        </div>
+    </form>
+</section>
+
+<section class="data-card" aria-label="Games list">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Publisher</th>
+                    <th>Genre</th>
+                    <th>Max Players</th>
+                    <th>Times Played</th>
+                    <th>Status</th>
+                    <th class="actions-column">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Games.Items.Count == 0)
+                {
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <span class="material-symbols-outlined" aria-hidden="true">sports_esports</span>
+                                <p>No games found.</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var game in Model.Games.Items)
+                    {
+                        <tr class="@(!game.IsActive ? "muted-row" : null)">
+                            <td>
+                                <div class="identity-cell">
+                                    <span class="avatar-token">@GetInitials(game.Name)</span>
+                                    <div>
+                                        <p>@game.Name</p>
+                                        <small>Game #@game.Id</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@game.Author</td>
+                            <td>@game.PublisherName</td>
+                            <td>@game.GenreName</td>
+                            <td>@game.MaxPlayers</td>
+                            <td>@game.TimesPlayed</td>
+                            <td>
+                                <span class="status-pill @(game.IsActive ? "active" : "inactive")">
+                                    @(game.IsActive ? "Active" : "Inactive")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="row-actions">
+                                    <a class="table-action" asp-action="Edit" asp-route-id="@game.Id">
+                                        <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                                        <span>Edit</span>
+                                    </a>
+                                    @if (game.IsActive)
+                                    {
+                                        <form asp-action="Deactivate" asp-route-id="@game.Id" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button class="table-action danger" type="submit">
+                                                <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+                                                <span>Deactivate</span>
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="Activate" asp-route-id="@game.Id" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button class="table-action" type="submit">
+                                                <span class="material-symbols-outlined" aria-hidden="true">refresh</span>
+                                                <span>Activate</span>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="table-footer">
+        <p>
+            Showing <strong>@Model.FirstItemNumber</strong>-<strong>@Model.LastItemNumber</strong>
+            of <strong>@Model.Games.TotalCount</strong> games
+        </p>
+        <div class="pagination-actions">
+            @if (Model.HasPreviousPage)
+            {
+                <a class="icon-page-link" aria-label="Previous page" asp-action="Index" asp-route-page="@Model.PreviousPage" asp-route-id="@Model.Id" asp-route-name="@Model.Name" asp-route-author="@Model.Author" asp-route-genreId="@Model.GenreId" asp-route-publisherId="@Model.PublisherId" asp-route-includeInactive="@Model.IncludeInactive">
+                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                </a>
+            }
+            else
+            {
+                <span class="icon-page-link disabled" aria-hidden="true">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </span>
+            }
+
+            @if (Model.HasNextPage)
+            {
+                <a class="icon-page-link" aria-label="Next page" asp-action="Index" asp-route-page="@Model.NextPage" asp-route-id="@Model.Id" asp-route-name="@Model.Name" asp-route-author="@Model.Author" asp-route-genreId="@Model.GenreId" asp-route-publisherId="@Model.PublisherId" asp-route-includeInactive="@Model.IncludeInactive">
+                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                </a>
+            }
+            else
+            {
+                <span class="icon-page-link disabled" aria-hidden="true">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </span>
+            }
+        </div>
+    </footer>
+</section>
+
+@functions {
+    private static string GetInitials(string name)
+    {
+        var parts = name
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Take(2)
+            .ToArray();
+
+        if (parts.Length == 0)
+        {
+            return "?";
+        }
+
+        return string.Concat(parts.Select(part => char.ToUpperInvariant(part[0])));
+    }
+}

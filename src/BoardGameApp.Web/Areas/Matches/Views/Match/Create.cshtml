@@ -1,0 +1,313 @@
+@model MatchCreateViewModel
+
+<section class="match-create-grid">
+    <aside class="match-side-panel">
+        <div class="form-card compact-card">
+            <h2>Game Selection</h2>
+            <p>Choose the game and add participating players from the roster.</p>
+
+            <div class="match-visual-panel">
+                <span class="material-symbols-outlined" aria-hidden="true">casino</span>
+                <strong>Match Session</strong>
+            </div>
+        </div>
+
+        <div class="form-card compact-card">
+            <h2>Selected Players</h2>
+            <p id="selectedPlayerCount">0 selected</p>
+            <div class="selected-player-list" id="selectedPlayerList" aria-live="polite"></div>
+        </div>
+    </aside>
+
+    <section class="form-card">
+        <header class="form-card-header">
+            <h2>Record New Match</h2>
+            <p>Winner is calculated automatically from the submitted scores.</p>
+        </header>
+
+        <form asp-action="Create" method="post" class="entity-form" id="matchCreateForm">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <input asp-for="WinnerPlayerId" type="hidden" value="0" />
+
+            <div class="form-field">
+                <label asp-for="GameId">Game Id</label>
+                <select asp-for="GameId" id="gameSelect">
+                    <option value="0" data-max-players="0">Select a game...</option>
+                    @foreach (var game in Model.Games)
+                    {
+                        <option value="@game.Id" data-max-players="@game.MaxPlayers">
+                            @game.Name (@game.MaxPlayers players)
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="GameId" class="field-validation"></span>
+            </div>
+
+            <div class="form-field">
+                <label asp-for="PlayerIds">Player Ids</label>
+                <div class="input-with-action">
+                    <input asp-for="PlayerIds" id="playerIdsInput" placeholder="1,5,8" readonly />
+                    <button class="secondary-button" type="button" id="openPlayerModalButton">
+                        <span class="material-symbols-outlined" aria-hidden="true">person_add</span>
+                        <span>Add Players</span>
+                    </button>
+                </div>
+                <span asp-validation-for="PlayerIds" class="field-validation"></span>
+                <span class="field-hint" id="playerLimitHint">Select a game to set the player limit.</span>
+            </div>
+
+            <div class="form-field">
+                <label asp-for="Scores">Scores</label>
+                <input asp-for="Scores" id="scoresInput" type="hidden" />
+                <div class="scores-editor" id="scoresEditor" aria-live="polite">
+                    <span class="field-hint">Select players to enter scores.</span>
+                </div>
+                <span asp-validation-for="Scores" class="field-validation"></span>
+            </div>
+
+            <div class="form-actions">
+                <a class="secondary-button" asp-action="Index">Cancel</a>
+                <button class="primary-button" type="submit" id="matchSubmitButton">
+                    <span class="material-symbols-outlined" aria-hidden="true">play_arrow</span>
+                    <span>Start Match Session</span>
+                </button>
+            </div>
+        </form>
+    </section>
+</section>
+
+<div class="modal-backdrop" id="playerSelectionModal" hidden>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="playerSelectionTitle">
+        <header class="modal-header">
+            <h2 id="playerSelectionTitle">Add Players to Match</h2>
+            <button class="icon-button" type="button" id="closePlayerModalButton" aria-label="Close player selection">
+                <span class="material-symbols-outlined" aria-hidden="true">close</span>
+            </button>
+        </header>
+
+        <div class="modal-search">
+            <div class="input-with-icon">
+                <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                <input id="playerSearchInput" placeholder="Search players..." />
+            </div>
+        </div>
+
+        <div class="modal-list" id="playerSelectionList">
+            @foreach (var player in Model.Players)
+            {
+                <label class="modal-player-row" data-player-name="@player.FullName.ToLowerInvariant()" data-player-phone="@player.WhatsApp">
+                    <span class="avatar-token">@GetInitials(player.FullName)</span>
+                    <span>
+                        <strong>@player.FullName</strong>
+                        <small>@player.WhatsApp</small>
+                    </span>
+                    <input type="checkbox" value="@player.Id" data-player-name="@player.FullName" />
+                </label>
+            }
+        </div>
+
+        <p class="modal-error" id="playerSelectionError" aria-live="polite"></p>
+
+        <footer class="modal-footer">
+            <button class="secondary-button" type="button" id="cancelPlayerModalButton">Cancel</button>
+            <button class="primary-button" type="button" id="applyPlayerSelectionButton">Add Selected</button>
+        </footer>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        (() => {
+            const modal = document.getElementById("playerSelectionModal");
+            const openButton = document.getElementById("openPlayerModalButton");
+            const closeButton = document.getElementById("closePlayerModalButton");
+            const cancelButton = document.getElementById("cancelPlayerModalButton");
+            const applyButton = document.getElementById("applyPlayerSelectionButton");
+            const searchInput = document.getElementById("playerSearchInput");
+            const playerIdsInput = document.getElementById("playerIdsInput");
+            const scoresInput = document.getElementById("scoresInput");
+            const scoresEditor = document.getElementById("scoresEditor");
+            const selectedPlayerList = document.getElementById("selectedPlayerList");
+            const selectedPlayerCount = document.getElementById("selectedPlayerCount");
+            const playerLimitHint = document.getElementById("playerLimitHint");
+            const playerSelectionError = document.getElementById("playerSelectionError");
+            const gameSelect = document.getElementById("gameSelect");
+            const matchSubmitButton = document.getElementById("matchSubmitButton");
+            const playerCheckboxes = Array.from(document.querySelectorAll("#playerSelectionList input[type='checkbox']"));
+            const selectedPlayers = new Map();
+            const selectedScores = new Map();
+
+            function getMaxPlayers() {
+                const selectedOption = gameSelect.options[gameSelect.selectedIndex];
+                return Number(selectedOption?.dataset.maxPlayers || 0);
+            }
+
+            function setError(message) {
+                playerSelectionError.textContent = message;
+                matchSubmitButton.disabled = Boolean(message);
+            }
+
+            function syncFromInput() {
+                const selectedIds = playerIdsInput.value
+                    .split(",")
+                    .map(value => value.trim())
+                    .filter(Boolean);
+                const scoreValues = scoresInput.value
+                    .split(",")
+                    .map(value => value.trim());
+
+                selectedPlayers.clear();
+                selectedScores.clear();
+                playerCheckboxes.forEach(checkbox => {
+                    const isSelected = selectedIds.includes(checkbox.value);
+                    checkbox.checked = isSelected;
+                    if (isSelected) {
+                        selectedPlayers.set(checkbox.value, checkbox.dataset.playerName);
+                        const scoreIndex = selectedIds.indexOf(checkbox.value);
+                        selectedScores.set(checkbox.value, scoreValues[scoreIndex] || "0");
+                    }
+                });
+            }
+
+            function syncScoresInput() {
+                scoresInput.value = Array.from(selectedPlayers.keys())
+                    .map(id => selectedScores.get(id) || "0")
+                    .join(",");
+            }
+
+            function renderScoreInputs() {
+                scoresEditor.innerHTML = "";
+
+                if (selectedPlayers.size === 0) {
+                    scoresEditor.innerHTML = "<span class=\"field-hint\">Select players to enter scores.</span>";
+                    syncScoresInput();
+                    return;
+                }
+
+                selectedPlayers.forEach((name, id) => {
+                    const row = document.createElement("label");
+                    row.className = "selected-player-score";
+
+                    const nameSpan = document.createElement("span");
+                    nameSpan.textContent = name;
+
+                    const input = document.createElement("input");
+                    input.type = "number";
+                    input.min = "0";
+                    input.value = selectedScores.get(id) || "0";
+                    input.dataset.playerId = id;
+                    input.addEventListener("input", () => {
+                        selectedScores.set(id, input.value || "0");
+                        syncScoresInput();
+                    });
+
+                    row.appendChild(nameSpan);
+                    row.appendChild(input);
+                    scoresEditor.appendChild(row);
+                });
+
+                syncScoresInput();
+            }
+
+            function renderSelection() {
+                playerIdsInput.value = Array.from(selectedPlayers.keys()).join(",");
+                selectedPlayerCount.textContent = `${selectedPlayers.size} selected`;
+                selectedPlayerList.innerHTML = "";
+
+                if (selectedPlayers.size === 0) {
+                    selectedPlayerList.innerHTML = "<span class=\"field-hint\">No players selected.</span>";
+                } else {
+                    selectedPlayers.forEach((name, id) => {
+                        const item = document.createElement("span");
+                        item.className = "selected-player-chip";
+                        item.textContent = `${name} (#${id})`;
+                        selectedPlayerList.appendChild(item);
+                    });
+                }
+
+                const maxPlayers = getMaxPlayers();
+                playerLimitHint.textContent = maxPlayers > 0
+                    ? `Maximum ${maxPlayers} players for the selected game.`
+                    : "Select a game to set the player limit.";
+                setError(maxPlayers > 0 && selectedPlayers.size > maxPlayers
+                    ? `This game allows up to ${maxPlayers} players.`
+                    : "");
+                renderScoreInputs();
+            }
+
+            function openModal() {
+                syncFromInput();
+                renderSelection();
+                modal.hidden = false;
+                searchInput.focus();
+            }
+
+            function closeModal() {
+                modal.hidden = true;
+                searchInput.value = "";
+                playerCheckboxes.forEach(checkbox => {
+                    checkbox.closest(".modal-player-row").hidden = false;
+                });
+            }
+
+            openButton.addEventListener("click", openModal);
+            closeButton.addEventListener("click", closeModal);
+            cancelButton.addEventListener("click", closeModal);
+            applyButton.addEventListener("click", closeModal);
+
+            searchInput.addEventListener("input", () => {
+                const term = searchInput.value.trim().toLowerCase();
+                playerCheckboxes.forEach(checkbox => {
+                    const row = checkbox.closest(".modal-player-row");
+                    row.hidden = !row.dataset.playerName.includes(term)
+                        && !row.dataset.playerPhone.toLowerCase().includes(term);
+                });
+            });
+
+            playerCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", () => {
+                    const maxPlayers = getMaxPlayers();
+
+                    if (checkbox.checked && maxPlayers > 0 && selectedPlayers.size >= maxPlayers) {
+                        checkbox.checked = false;
+                        setError(`This game allows up to ${maxPlayers} players.`);
+                        return;
+                    }
+
+                    if (checkbox.checked) {
+                        selectedPlayers.set(checkbox.value, checkbox.dataset.playerName);
+                        selectedScores.set(checkbox.value, selectedScores.get(checkbox.value) || "0");
+                    } else {
+                        selectedPlayers.delete(checkbox.value);
+                        selectedScores.delete(checkbox.value);
+                    }
+
+                    renderSelection();
+                });
+            });
+
+            gameSelect.addEventListener("change", renderSelection);
+            syncFromInput();
+            renderSelection();
+        })();
+    </script>
+}
+
+@functions {
+    private static string GetInitials(string fullName)
+    {
+        var parts = fullName
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Take(2)
+            .ToArray();
+
+        if (parts.Length == 0)
+        {
+            return "?";
+        }
+
+        return string.Concat(parts.Select(part => char.ToUpperInvariant(part[0])));
+    }
+}

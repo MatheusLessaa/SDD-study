@@ -1,0 +1,70 @@
+@model UpdateGameDto
+
+<section class="form-shell">
+    <div class="form-card">
+        <header class="form-card-header">
+            <h2>Edit Game</h2>
+            <p>Update game details, play count, and status.</p>
+        </header>
+
+        <form asp-action="Edit" method="post" class="entity-form">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <input asp-for="Id" type="hidden" />
+
+            <div class="form-field">
+                <label asp-for="Name">Name</label>
+                <input asp-for="Name" />
+                <span asp-validation-for="Name" class="field-validation"></span>
+            </div>
+
+            <div class="form-field">
+                <label asp-for="Author">Author</label>
+                <input asp-for="Author" />
+                <span asp-validation-for="Author" class="field-validation"></span>
+            </div>
+
+            <div class="form-grid two-columns">
+                <div class="form-field">
+                    <label asp-for="PublisherId">Publisher Id</label>
+                    <input asp-for="PublisherId" type="number" min="1" />
+                    <span asp-validation-for="PublisherId" class="field-validation"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="GenreId">Genre Id</label>
+                    <input asp-for="GenreId" type="number" min="1" />
+                    <span asp-validation-for="GenreId" class="field-validation"></span>
+                </div>
+            </div>
+
+            <div class="form-grid two-columns">
+                <div class="form-field">
+                    <label asp-for="MaxPlayers">Max Players</label>
+                    <input asp-for="MaxPlayers" type="number" min="1" />
+                    <span asp-validation-for="MaxPlayers" class="field-validation"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="TimesPlayed">Times Played</label>
+                    <input asp-for="TimesPlayed" type="number" min="0" />
+                    <span asp-validation-for="TimesPlayed" class="field-validation"></span>
+                </div>
+            </div>
+
+            <label class="checkbox-field standalone">
+                <input asp-for="IsActive" />
+                <span>Active game</span>
+            </label>
+
+            <div class="form-actions">
+                <a class="secondary-button" asp-action="Index">Cancel</a>
+                <button class="primary-button" type="submit">
+                    <span class="material-symbols-outlined" aria-hidden="true">save</span>
+                    <span>Save Game</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</section>

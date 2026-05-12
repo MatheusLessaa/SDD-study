@@ -82,6 +82,34 @@ public class PlayerRepositoryTests
     }
 
     [Fact]
+    public async Task List_applies_full_name_filter_individually()
+    {
+        await using var dbContext = CreateDbContext();
+        var repository = new PlayerRepository(dbContext);
+        await repository.CreateAsync(new Player { FullName = "Alice Cooper", WhatsApp = "119999" });
+        await repository.CreateAsync(new Player { FullName = "Bob Cooper", WhatsApp = "218888" });
+
+        var result = await repository.ListAsync(new PlayerFilter("Alice"));
+
+        Assert.Single(result.Items);
+        Assert.Equal("Alice Cooper", result.Items[0].FullName);
+    }
+
+    [Fact]
+    public async Task List_applies_whatsapp_filter_individually()
+    {
+        await using var dbContext = CreateDbContext();
+        var repository = new PlayerRepository(dbContext);
+        await repository.CreateAsync(new Player { FullName = "Alice Cooper", WhatsApp = "119999" });
+        await repository.CreateAsync(new Player { FullName = "Bob Cooper", WhatsApp = "218888" });
+
+        var result = await repository.ListAsync(new PlayerFilter(WhatsApp: "218"));
+
+        Assert.Single(result.Items);
+        Assert.Equal("Bob Cooper", result.Items[0].FullName);
+    }
+
+    [Fact]
     public async Task List_applies_full_name_and_whatsapp_filters_together()
     {
         await using var dbContext = CreateDbContext();
@@ -97,7 +125,7 @@ public class PlayerRepositoryTests
     }
 
     [Fact]
-    public async Task List_uses_fixed_page_size_of_twenty()
+    public async Task List_uses_fixed_page_size_of_twenty_and_returns_requested_page()
     {
         await using var dbContext = CreateDbContext();
         var repository = new PlayerRepository(dbContext);
@@ -118,6 +146,8 @@ public class PlayerRepositoryTests
         Assert.Equal(5, secondPage.Items.Count);
         Assert.Equal(25, firstPage.TotalCount);
         Assert.Equal(20, firstPage.PageSize);
+        Assert.Equal(2, secondPage.Page);
+        Assert.Equal("Player 21", secondPage.Items[0].FullName);
     }
 
     private static AppDbContext CreateDbContext()

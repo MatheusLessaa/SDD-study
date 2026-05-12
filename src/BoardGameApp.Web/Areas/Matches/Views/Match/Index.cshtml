@@ -1,0 +1,137 @@
+@model MatchIndexViewModel
+
+@{
+    var hasFilters = Model.Id.HasValue || Model.GameId.HasValue;
+}
+
+<section class="filters-panel" aria-label="Match filters">
+    <form asp-action="Index" method="get" class="filters-grid match-filters-grid">
+        <div class="form-field">
+            <label for="id">Match Id</label>
+            <input id="id" name="id" type="number" min="1" value="@Model.Id" placeholder="Match" />
+        </div>
+
+        <div class="form-field">
+            <label for="gameId">Game Id</label>
+            <div class="input-with-icon">
+                <span class="material-symbols-outlined" aria-hidden="true">casino</span>
+                <input id="gameId" name="gameId" type="number" min="1" value="@Model.GameId" placeholder="Game" />
+            </div>
+        </div>
+
+        <div class="filter-actions">
+            <button class="primary-button" type="submit">
+                <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                <span>Search</span>
+            </button>
+            @if (hasFilters)
+            {
+                <a class="secondary-button" asp-action="Index">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                    <span>Clear</span>
+                </a>
+            }
+            <a class="primary-button" asp-action="Create">
+                <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                <span>New Match</span>
+            </a>
+        </div>
+    </form>
+</section>
+
+<section class="data-card" aria-label="Matches list">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Match</th>
+                    <th>Game</th>
+                    <th>Players</th>
+                    <th>Scores</th>
+                    <th>Winner</th>
+                    <th>Created</th>
+                    <th class="actions-column">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Matches.Items.Count == 0)
+                {
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <span class="material-symbols-outlined" aria-hidden="true">history</span>
+                                <p>No matches found.</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var match in Model.Matches.Items)
+                    {
+                        <tr>
+                            <td>
+                                <div class="identity-cell">
+                                    <span class="avatar-token">#@match.Id</span>
+                                    <div>
+                                        <p>Match #@match.Id</p>
+                                        <small>Score record</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>#@match.GameId</td>
+                            <td>@match.PlayerIds</td>
+                            <td>@match.Scores</td>
+                            <td>
+                                <span class="status-pill active">Player #@match.WinnerPlayerId</span>
+                            </td>
+                            <td>@match.CreatedAt.ToString("g")</td>
+                            <td>
+                                <div class="row-actions">
+                                    <a class="table-action" asp-action="Edit" asp-route-id="@match.Id">
+                                        <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                                        <span>Edit Scores</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="table-footer">
+        <p>
+            Showing <strong>@Model.FirstItemNumber</strong>-<strong>@Model.LastItemNumber</strong>
+            of <strong>@Model.Matches.TotalCount</strong> matches
+        </p>
+        <div class="pagination-actions">
+            @if (Model.HasPreviousPage)
+            {
+                <a class="icon-page-link" aria-label="Previous page" asp-action="Index" asp-route-page="@Model.PreviousPage" asp-route-id="@Model.Id" asp-route-gameId="@Model.GameId">
+                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                </a>
+            }
+            else
+            {
+                <span class="icon-page-link disabled" aria-hidden="true">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </span>
+            }
+
+            @if (Model.HasNextPage)
+            {
+                <a class="icon-page-link" aria-label="Next page" asp-action="Index" asp-route-page="@Model.NextPage" asp-route-id="@Model.Id" asp-route-gameId="@Model.GameId">
+                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                </a>
+            }
+            else
+            {
+                <span class="icon-page-link disabled" aria-hidden="true">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </span>
+            }
+        </div>
+    </footer>
+</section>

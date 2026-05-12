@@ -14,12 +14,15 @@ public class MatchDtoTests
             Scores: "10,7,3",
             WinnerPlayerId: 1);
 
+        var beforeCreate = DateTime.Now;
         var match = dto.ToEntity();
+        var afterCreate = DateTime.Now;
 
         Assert.Equal(4, match.GameId);
         Assert.Equal("1,5,8", match.PlayerIds);
         Assert.Equal("10,7,3", match.Scores);
         Assert.Equal(1, match.WinnerPlayerId);
+        Assert.InRange(match.CreatedAt, beforeCreate, afterCreate);
     }
 
     [Fact]
@@ -58,7 +61,8 @@ public class MatchDtoTests
             GameId = 6,
             PlayerIds = "7,8",
             Scores = "11,9",
-            WinnerPlayerId = 7
+            WinnerPlayerId = 7,
+            CreatedAt = new DateTime(2026, 5, 12, 18, 30, 0)
         };
 
         var dto = MatchViewDto.FromEntity(match);
@@ -68,5 +72,6 @@ public class MatchDtoTests
         Assert.Equal("7,8", dto.PlayerIds);
         Assert.Equal("11,9", dto.Scores);
         Assert.Equal(7, dto.WinnerPlayerId);
+        Assert.Equal(new DateTime(2026, 5, 12, 18, 30, 0), dto.CreatedAt);
     }
 }

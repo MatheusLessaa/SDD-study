@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-surface": "#191c1e",
+            "on-primary-container": "#7c839b",
+            "surface": "#f7f9fb",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed": "#001a42",
+            "on-primary": "#ffffff",
+            "on-error-container": "#93000a",
+            "on-primary-fixed-variant": "#3f465c",
+            "tertiary": "#000000",
+            "surface-variant": "#e0e3e5",
+            "surface-container-highest": "#e0e3e5",
+            "on-background": "#191c1e",
+            "surface-tint": "#565e74",
+            "tertiary-fixed": "#d3e4fe",
+            "on-secondary-container": "#fefcff",
+            "inverse-on-surface": "#eff1f3",
+            "error": "#ba1a1a",
+            "primary": "#000000",
+            "on-primary-fixed": "#131b2e",
+            "tertiary-container": "#0b1c30",
+            "secondary": "#0058be",
+            "secondary-fixed": "#d8e2ff",
+            "surface-container-low": "#f2f4f6",
+            "surface-dim": "#d8dadc",
+            "on-secondary-fixed-variant": "#004395",
+            "primary-fixed-dim": "#bec6e0",
+            "on-tertiary-fixed": "#0b1c30",
+            "on-error": "#ffffff",
+            "surface-bright": "#f7f9fb",
+            "on-surface-variant": "#45464d",
+            "background": "#f7f9fb",
+            "error-container": "#ffdad6",
+            "surface-container-high": "#e6e8ea",
+            "primary-container": "#131b2e",
+            "inverse-primary": "#bec6e0",
+            "secondary-fixed-dim": "#adc6ff",
+            "outline": "#76777d",
+            "on-secondary": "#ffffff",
+            "outline-variant": "#c6c6cd",
+            "secondary-container": "#2170e4",
+            "primary-fixed": "#dae2fd",
+            "tertiary-fixed-dim": "#b7c8e1",
+            "surface-container": "#eceef0",
+            "on-tertiary-fixed-variant": "#38485d",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#75859d",
+            "inverse-surface": "#2d3133"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "container-max": "1280px",
+            "sidebar-width": "260px",
+            "stack-lg": "2rem",
+            "margin-page": "2rem",
+            "stack-sm": "0.5rem",
+            "stack-md": "1rem",
+            "gutter": "1.5rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Inter"],
+            "body-md": ["Inter"],
+            "table-header": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-sm": ["Inter"],
+            "body-sm": ["Inter"],
+            "label-md": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "table-header": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+            "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+            "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+            "headline-sm": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+            "body-sm": ["12px", {"lineHeight": "18px", "fontWeight": "400"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body { background-color: #f7f9fb; }
+    .sidebar-active-pill {
+      border-left: 4px solid #0058be;
+      background-color: rgba(124, 131, 155, 0.1);
+    }
+  </style>
+</head>
+<body class="font-body-md text-on-background">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-primary-container border-r border-outline-variant flex flex-col py-stack-lg z-50">
+<div class="px-6 mb-10">
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary">MatchTracker</h1>
+<p class="text-on-primary-container text-body-sm opacity-80">Strategy Analytics</p>
+</div>
+<nav class="flex-grow space-y-1">
+<a class="flex items-center text-on-primary-container px-6 py-3 hover:bg-on-primary-container/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center text-on-primary-container px-6 py-3 hover:bg-on-primary-container/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="casino">casino</span>
+<span class="font-body-md">Games</span>
+</a>
+<a class="flex items-center text-on-primary-container px-6 py-3 hover:bg-on-primary-container/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="group">group</span>
+<span class="font-body-md">Players</span>
+</a>
+<!-- Active State for New Match / Match History context -->
+<a class="flex items-center text-secondary border-l-4 border-secondary px-6 py-3 bg-on-primary-container/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="history">history</span>
+<span class="font-body-md">Matches</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-secondary text-on-secondary py-3 rounded-lg font-body-md font-bold shadow-sm hover:opacity-90 active:scale-95 transition-all">
+        New Match
+      </button>
+<a class="flex items-center text-on-primary-container px-0 py-3 mt-4 hover:bg-on-primary-container/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 right-0 h-16 bg-surface border-b border-outline-variant z-40 ml-sidebar-width flex items-center px-margin-page">
+<div class="flex items-center w-full max-w-container-max">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-lg w-96 border border-outline-variant/30">
+<span class="material-symbols-outlined text-on-surface-variant mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-full text-on-surface" placeholder="Search analytics..." type="text"/>
+</div>
+<div class="ml-auto flex items-center space-x-6">
+<span class="text-on-surface-variant font-label-md">v2.4.0 STABLE</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width pt-16 min-h-screen">
+<div class="p-margin-page max-w-container-max mx-auto">
+<!-- Page Header -->
+<div class="mb-stack-lg">
+<nav class="flex items-center space-x-2 text-on-surface-variant text-body-sm mb-2">
+<span>Matches</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-secondary font-medium">New Session</span>
+</nav>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Record New Match</h2>
+<p class="text-on-surface-variant mt-1">Configure session details and player participants for analytics tracking.</p>
+</div>
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Selection Sidebar (Left Column) -->
+<div class="col-span-12 lg:col-span-4 space-y-gutter">
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+<h3 class="font-headline-sm text-headline-sm mb-4">Game Selection</h3>
+<label class="block text-table-header text-on-surface-variant uppercase mb-2">Primary Title</label>
+<div class="relative">
+<select class="w-full appearance-none bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 text-body-md text-on-surface focus:ring-2 focus:ring-secondary focus:border-secondary outline-none cursor-pointer">
+<option>Select a game...</option>
+<option>Scythe</option>
+<option>Terraforming Mars</option>
+<option>Root: The Marauder Expansion</option>
+<option>Brass: Birmingham</option>
+<option>Wingspan</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="mt-6 pt-6 border-t border-outline-variant/30">
+<label class="block text-table-header text-on-surface-variant uppercase mb-2">Session Date</label>
+<div class="flex items-center bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3">
+<span class="material-symbols-outlined text-on-surface-variant mr-3" data-icon="calendar_today">calendar_today</span>
+<span class="text-body-md">October 24, 2023</span>
+</div>
+</div>
+<div class="mt-8">
+<div class="aspect-video rounded-lg overflow-hidden bg-surface-container-high border border-outline-variant relative">
+<img class="w-full h-full object-cover grayscale-[20%]" data-alt="A high-quality top-down professional photograph of a complex strategy board game setup. The image shows wooden pieces, colorful cards, and a detailed game board illuminated by soft ambient studio lighting. The aesthetic is clean and organized, with a focus on tactile components and strategic depth, reflecting a premium gaming experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvU3sU2MEv-goy3oIj6G8x19xrSetD7Sie-F4ggmjLOf7z8aSuTikXzOyIItuyUKcxAeGj0JxYQ981eSRlHP3WGTiKFdJAEpMGZB0xtqsPyTcAPttanwFE0ReEMBIVQVE0ZuPWL_u_vcDf6wK8BuOFet7ZDlsG8LJ4e4J9ZB_yes52QE_Vpv0QcBHpGURoOLj10H-Q1_M-jjR3tnyVBX-xQZ6W6nCLuJfdVYTHvY0EyC1p7wSLYMolJNqUXjCS0sZ08NTC31L5Eu25"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
+<span class="text-white text-body-sm font-medium">Auto-populating assets...</span>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+<h3 class="font-headline-sm text-headline-sm mb-2">Match Settings</h3>
+<div class="space-y-4 mt-4">
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-on-surface-variant mr-3" data-icon="public">public</span>
+<span class="text-body-md font-medium">Public Analytics</span>
+</div>
+<div class="w-10 h-6 bg-secondary rounded-full flex items-center justify-end px-1">
+<div class="w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-on-surface-variant mr-3" data-icon="timer">timer</span>
+<span class="text-body-md font-medium">Timed Match</span>
+</div>
+<div class="w-10 h-6 bg-outline-variant rounded-full flex items-center justify-start px-1">
+<div class="w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Player Management (Main Column) -->
+<div class="col-span-12 lg:col-span-8 space-y-gutter">
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="p-6 flex items-center justify-between border-b border-outline-variant/30">
+<div>
+<h3 class="font-headline-sm text-headline-sm">Roster &amp; Positions</h3>
+<p class="text-on-surface-variant text-body-sm">Assign factions and seats to participating players.</p>
+</div>
+<button class="flex items-center space-x-2 border border-secondary text-secondary px-4 py-2 rounded-lg font-body-md hover:bg-secondary/5 transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="person_add">person_add</span>
+<span>Add Player</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-6 py-4 font-table-header text-on-surface-variant uppercase">Player Name</th>
+<th class="px-6 py-4 font-table-header text-on-surface-variant uppercase">Faction / Color</th>
+<th class="px-6 py-4 font-table-header text-on-surface-variant uppercase">Seat</th>
+<th class="px-6 py-4 font-table-header text-on-surface-variant uppercase text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20">
+<tr class="hover:bg-surface-container-low/50 transition-colors h-16">
+<td class="px-6 py-4">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-white text-[10px] mr-3">AM</div>
+<span class="font-body-md font-medium">Alex Morgan</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-surface-container-high text-on-surface-variant px-2 py-1 rounded text-body-sm border border-outline-variant/30">Polania Republic</span>
+</td>
+<td class="px-6 py-4">
+<span class="font-label-md text-on-surface">1</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors h-16">
+<td class="px-6 py-4">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-white text-[10px] mr-3">SK</div>
+<span class="font-body-md font-medium">Sarah Klein</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-surface-container-high text-on-surface-variant px-2 py-1 rounded text-body-sm border border-outline-variant/30">Saxony Empire</span>
+</td>
+<td class="px-6 py-4">
+<span class="font-label-md text-on-surface">2</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors h-16">
+<td class="px-6 py-4">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-tertiary-container flex items-center justify-center text-white text-[10px] mr-3">JC</div>
+<span class="font-body-md font-medium">James Chen</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-surface-container-high text-on-surface-variant px-2 py-1 rounded text-body-sm border border-outline-variant/30">Crimean Khanate</span>
+</td>
+<td class="px-6 py-4">
+<span class="font-label-md text-on-surface">3</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 bg-surface-container-low/30 border-t border-outline-variant/30">
+<button class="text-secondary font-body-sm font-medium hover:underline flex items-center">
+<span class="material-symbols-outlined text-[18px] mr-1" data-icon="refresh">refresh</span>
+                Randomize Turn Order
+              </button>
+</div>
+</section>
+<!-- Action Footer Section (Asymmetric / Glassmorphism-style) -->
+<div class="flex items-center justify-end space-x-4 bg-surface-container-highest/10 backdrop-blur-md border border-outline-variant/20 p-6 rounded-xl">
+<button class="px-6 py-3 rounded-lg text-on-surface-variant font-body-md font-medium hover:bg-surface-container-high transition-colors">
+              Save as Draft
+            </button>
+<button class="flex items-center space-x-2 bg-secondary text-on-secondary px-8 py-3 rounded-lg font-body-md font-bold shadow-lg shadow-secondary/20 hover:opacity-90 active:scale-95 transition-all">
+<span>Start Match Session</span>
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

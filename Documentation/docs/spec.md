@@ -195,10 +195,7 @@ Each context is **isolated and self-contained**.
 * Winner must be recalculated after score update:
 
   * Highest score wins
-
-[NEED CLARIFICATION]
-
-* In case of tie (same highest score), system behavior is undefined
+  * In case of tie (same highest score), the winner is the tied player whose `FullName` comes first in ascending alphabetical order.
 
 ---
 
@@ -320,6 +317,7 @@ Each context is **isolated and self-contained**.
 * Application must run locally
 * No authentication required
 * Simple UI (no SPA required)
+* UI implementation must use the images and code in `Documentation/visual-reference` as the visual and structural reference for layout, components, spacing, and interaction patterns.
 * Maintainable modular structure (per context MVC)
 
 ---
@@ -330,7 +328,6 @@ Each context is **isolated and self-contained**.
 * Genre-driven rules (cooperative games, no winner, etc.)
 * Editable Genres and Publishers
 * Advanced match filtering (by player name)
-* Support for ties
 * Replace string-based player storage with relational model
 
 ---
@@ -342,4 +339,3 @@ Each context is **isolated and self-contained**.
 * External integrations (WhatsApp APIs, etc.)
 
 ---
-

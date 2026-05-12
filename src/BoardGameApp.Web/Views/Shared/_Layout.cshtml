@@ -3,11 +3,72 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - BoardGameApp</title>
+    <title>@ViewData["Title"] - MatchTracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <main role="main">
-        @RenderBody()
-    </main>
+    @{
+        var activeNav = ViewData["ActiveNav"]?.ToString() ?? ViewContext.RouteData.Values["controller"]?.ToString() ?? "Dashboard";
+        var pageTitle = ViewData["Title"]?.ToString() ?? "Dashboard";
+    }
+
+    <div class="app-shell">
+        <aside class="sidebar" aria-label="Primary navigation">
+            <a class="brand" asp-controller="Home" asp-action="Index" aria-label="MatchTracker home">
+                <span class="brand-title">MatchTracker</span>
+                <span class="brand-subtitle">Strategy Analytics</span>
+            </a>
+
+            <nav class="nav-list" aria-label="Main">
+                <a class="sidebar-link @(activeNav == "Dashboard" || activeNav == "Home" ? "active" : null)" asp-controller="Home" asp-action="Index">
+                    <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
+                    <span>Dashboard</span>
+                </a>
+                <a class="sidebar-link @(activeNav == "Games" ? "active" : null)" asp-controller="Games" asp-action="Index">
+                    <span class="material-symbols-outlined" aria-hidden="true">stadia_controller</span>
+                    <span>Games</span>
+                </a>
+                <a class="sidebar-link @(activeNav == "Players" ? "active" : null)" asp-area="Players" asp-controller="Player" asp-action="Index">
+                    <span class="material-symbols-outlined" aria-hidden="true">groups</span>
+                    <span>Players</span>
+                </a>
+                <a class="sidebar-link @(activeNav == "Matches" ? "active" : null)" asp-controller="Matches" asp-action="Index">
+                    <span class="material-symbols-outlined" aria-hidden="true">history</span>
+                    <span>Matches</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a class="new-match-link" asp-controller="Matches" asp-action="Create">
+                    <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                    <span>New Match</span>
+                </a>
+            </div>
+        </aside>
+
+        <header class="topbar">
+            <h1>@pageTitle</h1>
+            <div class="topbar-actions" aria-label="Account actions">
+                <button class="icon-button" type="button" aria-label="Notifications">
+                    <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
+                </button>
+                <button class="icon-button" type="button" aria-label="Help">
+                    <span class="material-symbols-outlined" aria-hidden="true">help</span>
+                </button>
+                <div class="profile-avatar" aria-label="User profile">MT</div>
+            </div>
+        </header>
+
+        <main class="main-canvas" role="main">
+            <div class="content-container">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

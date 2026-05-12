@@ -3,6 +3,7 @@ using BoardGameApp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BoardGameApp.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260511224005_InitialSchema")]
+    partial class InitialSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,23 +82,6 @@ namespace BoardGameApp.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genres");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Strategy"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Family"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Party"
-                        });
                 });
 
             modelBuilder.Entity("BoardGameApp.Domain.Matches.Match", b =>
@@ -174,23 +160,6 @@ namespace BoardGameApp.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Publishers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Galapagos"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Devir"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Meeple BR"
-                        });
                 });
 
             modelBuilder.Entity("BoardGameApp.Domain.Games.Game", b =>

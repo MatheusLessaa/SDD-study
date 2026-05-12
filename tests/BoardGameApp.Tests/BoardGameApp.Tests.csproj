@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\src\BoardGameApp.Application\BoardGameApp.Application.csproj" />
     <ProjectReference Include="..\..\src\BoardGameApp.Domain\BoardGameApp.Domain.csproj" />
     <ProjectReference Include="..\..\src\BoardGameApp.Infrastructure\BoardGameApp.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\BoardGameApp.Web\BoardGameApp.Web.csproj" />
   </ItemGroup>
 
 </Project>

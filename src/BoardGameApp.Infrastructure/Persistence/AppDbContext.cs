@@ -53,18 +53,38 @@ public class AppDbContext : DbContext
 
             entity.HasIndex(game => new { game.Name, game.PublisherId })
                 .IsUnique();
+
+            entity.HasOne<Publisher>()
+                .WithMany()
+                .HasForeignKey(game => game.PublisherId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<Genre>()
+                .WithMany()
+                .HasForeignKey(game => game.GenreId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<Genre>(entity =>
         {
             entity.Property(genre => genre.Name)
                 .IsRequired();
+
+            entity.HasData(
+                new Genre { Id = 1, Name = "Strategy" },
+                new Genre { Id = 2, Name = "Family" },
+                new Genre { Id = 3, Name = "Party" });
         });
 
         modelBuilder.Entity<Publisher>(entity =>
         {
             entity.Property(publisher => publisher.Name)
                 .IsRequired();
+
+            entity.HasData(
+                new Publisher { Id = 1, Name = "Galapagos" },
+                new Publisher { Id = 2, Name = "Devir" },
+                new Publisher { Id = 3, Name = "Meeple BR" });
         });
 
         modelBuilder.Entity<Match>(entity =>
@@ -74,6 +94,16 @@ public class AppDbContext : DbContext
 
             entity.Property(match => match.Scores)
                 .IsRequired();
+
+            entity.HasOne<Game>()
+                .WithMany()
+                .HasForeignKey(match => match.GameId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<Player>()
+                .WithMany()
+                .HasForeignKey(match => match.WinnerPlayerId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

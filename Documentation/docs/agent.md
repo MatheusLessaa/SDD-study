@@ -382,6 +382,8 @@ Formato esperado:
 
 Quando a tarefa envolver interface, o agente deve:
 
+- Usar obrigatoriamente as imagens e o código em `Documentation/visual-reference` como referência visual e estrutural para qualquer task relacionada a UI.
+- Conferir os arquivos de referência relevantes antes de implementar a interface, incluindo `.html`, `.png` e `.jpg` disponíveis nessa pasta.
 - Explicar o fluxo de tela.
 - Indicar componentes afetados.
 - Respeitar padrões visuais existentes.

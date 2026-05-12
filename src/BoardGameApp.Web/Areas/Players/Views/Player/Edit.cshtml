@@ -1,0 +1,42 @@
+@model UpdatePlayerDto
+
+<section class="form-shell">
+    <div class="form-card">
+        <header class="form-card-header">
+            <h2>Edit Player</h2>
+            <p>Update player contact details and status.</p>
+        </header>
+
+        <form asp-action="Edit" method="post" class="entity-form">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <input asp-for="Id" type="hidden" />
+
+            <div class="form-field">
+                <label asp-for="FullName">Full name</label>
+                <input asp-for="FullName" />
+                <span asp-validation-for="FullName" class="field-validation"></span>
+            </div>
+
+            <div class="form-field">
+                <label asp-for="WhatsApp">WhatsApp</label>
+                <input asp-for="WhatsApp" />
+                <span asp-validation-for="WhatsApp" class="field-validation"></span>
+            </div>
+
+            <label class="checkbox-field standalone">
+                <input asp-for="IsActive" />
+                <span>Active player</span>
+            </label>
+
+            <div class="form-actions">
+                <a class="secondary-button" asp-action="Index">Cancel</a>
+                <button class="primary-button" type="submit">
+                    <span class="material-symbols-outlined" aria-hidden="true">save</span>
+                    <span>Save Player</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</section>

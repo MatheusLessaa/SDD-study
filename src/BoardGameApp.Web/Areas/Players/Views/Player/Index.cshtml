@@ -1,0 +1,170 @@
+@model PlayerIndexViewModel
+
+@{
+    var hasFilters = !string.IsNullOrWhiteSpace(Model.FullName)
+        || !string.IsNullOrWhiteSpace(Model.WhatsApp)
+        || Model.IncludeInactive;
+}
+
+<section class="filters-panel" aria-label="Player filters">
+    <form asp-action="Index" method="get" class="filters-grid">
+        <div class="form-field">
+            <label for="fullName">Search by Name</label>
+            <div class="input-with-icon">
+                <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                <input id="fullName" name="fullName" value="@Model.FullName" placeholder="Enter player name..." />
+            </div>
+        </div>
+
+        <div class="form-field">
+            <label for="whatsApp">Search by Phone</label>
+            <div class="input-with-icon">
+                <span class="material-symbols-outlined" aria-hidden="true">call</span>
+                <input id="whatsApp" name="whatsApp" value="@Model.WhatsApp" placeholder="+1 (555) 000-0000" />
+            </div>
+        </div>
+
+        <label class="checkbox-field">
+            <input type="checkbox" name="includeInactive" value="true" checked="@Model.IncludeInactive" />
+            <span>Include inactive</span>
+        </label>
+
+        <div class="filter-actions">
+            <button class="primary-button" type="submit">
+                <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                <span>Search</span>
+            </button>
+            @if (hasFilters)
+            {
+                <a class="secondary-button" asp-action="Index">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                    <span>Clear</span>
+                </a>
+            }
+            <a class="primary-button" asp-action="Create">
+                <span class="material-symbols-outlined" aria-hidden="true">person_add</span>
+                <span>Add New Player</span>
+            </a>
+        </div>
+    </form>
+</section>
+
+<section class="data-card" aria-label="Players list">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th class="actions-column">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Players.Items.Count == 0)
+                {
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <span class="material-symbols-outlined" aria-hidden="true">group_off</span>
+                                <p>No players found.</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var player in Model.Players.Items)
+                    {
+                        <tr class="@(!player.IsActive ? "muted-row" : null)">
+                            <td>
+                                <div class="identity-cell">
+                                    <span class="avatar-token">@GetInitials(player.FullName)</span>
+                                    <div>
+                                        <p>@player.FullName</p>
+                                        <small>Player #@player.Id</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@player.WhatsApp</td>
+                            <td>
+                                <span class="status-pill @(player.IsActive ? "active" : "inactive")">
+                                    @(player.IsActive ? "Active" : "Inactive")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="row-actions">
+                                    <a class="table-action" asp-action="Edit" asp-route-id="@player.Id">
+                                        <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                                        <span>Edit</span>
+                                    </a>
+                                    @if (player.IsActive)
+                                    {
+                                        <form asp-action="Deactivate" asp-route-id="@player.Id" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button class="table-action danger" type="submit">
+                                                <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+                                                <span>Deactivate</span>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="table-footer">
+        <p>
+            Showing <strong>@Model.FirstItemNumber</strong>-<strong>@Model.LastItemNumber</strong>
+            of <strong>@Model.Players.TotalCount</strong> players
+        </p>
+        <div class="pagination-actions">
+            @if (Model.HasPreviousPage)
+            {
+                <a class="icon-page-link" aria-label="Previous page" asp-action="Index" asp-route-page="@Model.PreviousPage" asp-route-fullName="@Model.FullName" asp-route-whatsApp="@Model.WhatsApp" asp-route-includeInactive="@Model.IncludeInactive">
+                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                </a>
+            }
+            else
+            {
+                <span class="icon-page-link disabled" aria-hidden="true">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </span>
+            }
+
+            @if (Model.HasNextPage)
+            {
+                <a class="icon-page-link" aria-label="Next page" asp-action="Index" asp-route-page="@Model.NextPage" asp-route-fullName="@Model.FullName" asp-route-whatsApp="@Model.WhatsApp" asp-route-includeInactive="@Model.IncludeInactive">
+                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                </a>
+            }
+            else
+            {
+                <span class="icon-page-link disabled" aria-hidden="true">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </span>
+            }
+        </div>
+    </footer>
+</section>
+
+@functions {
+    private static string GetInitials(string fullName)
+    {
+        var parts = fullName
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Take(2)
+            .ToArray();
+
+        if (parts.Length == 0)
+        {
+            return "?";
+        }
+
+        return string.Concat(parts.Select(part => char.ToUpperInvariant(part[0])));
+    }
+}

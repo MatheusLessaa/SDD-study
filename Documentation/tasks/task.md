@@ -282,6 +282,23 @@
 
 # 5. Web Layer
 
+## UI Reference Requirement
+
+For every UI-related task in this section, the implementation must use the images and code in `Documentation/visual-reference` as the visual and structural reference.
+
+Reference assets currently include:
+
+* `player-tab-reference.jpg`
+* `player-tab-reference.html`
+* `new-match-reference.png`
+* `new-match-reference.html`
+* `new-match-modal-reference.png`
+* `new-match-modal-reference.html`
+
+The UI does not need to copy these files verbatim, but layout, spacing, visual hierarchy, component behavior, and interaction patterns must be aligned with them unless a task explicitly says otherwise.
+
+---
+
 ## Task 5.1 — Configure Dependency Injection
 
 **Acceptance Criteria**

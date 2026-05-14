@@ -101,7 +101,7 @@ Each context is **isolated and self-contained**.
 | Name        | STRING | Required     |
 | PublisherId | INT    | FK           |
 | GenreId     | INT    | FK           |
-| Author      | STRING | Required     |
+| AuthorId    | INT    | FK           |
 | TimesPlayed | INT    | Default 0    |
 | MaxPlayers  | INT    | Required     |
 | IsActive    | BOOL   | Default true |
@@ -111,6 +111,8 @@ Each context is **isolated and self-contained**.
 ### 5.2 Business Rules
 
 * Name + PublisherId must be unique
+* Author must be selected from the Authors supporting table.
+* Add Game must display author names in a dropdown and submit the selected AuthorId.
 * TimesPlayed must increment by 1 whenever a new match is successfully created for the game.
 * Games cannot be deleted
 * Deletion = set `IsActive = false`
@@ -287,7 +289,16 @@ Each context is **isolated and self-contained**.
 
 ---
 
-### 7.3 Rules
+### 7.3 Authors
+
+| Field | Type   |
+| ----- | ------ |
+| Id    | INT    |
+| Name  | STRING |
+
+---
+
+### 7.4 Rules
 
 * Initially static (seeded data)
 * Not editable via UI in v1
@@ -333,6 +344,7 @@ Each context is **isolated and self-contained**.
 
 * Application must run locally
 * No authentication required
+* The base layout must not display account, logged-user, notification, or help icons that imply authentication/user-specific features.
 * Simple UI (no SPA required)
 * UI implementation must use the images and code in `Documentation/visual-reference` as the visual and structural reference for layout, components, spacing, and interaction patterns.
 * Maintainable modular structure (per context MVC)

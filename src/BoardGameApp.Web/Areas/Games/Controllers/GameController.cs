@@ -50,7 +50,7 @@ public sealed class GameController : Controller
     {
         SetGamesNavigation("Create Game");
 
-        return View(new CreateGameDto(string.Empty, 0, 0, string.Empty, 1));
+        return View(new CreateGameDto(string.Empty, 0, 0, 0, 1));
     }
 
     [HttpPost]
@@ -98,7 +98,7 @@ public sealed class GameController : Controller
             game.Name,
             game.PublisherId,
             game.GenreId,
-            game.Author,
+            game.AuthorId,
             game.TimesPlayed,
             game.MaxPlayers,
             game.IsActive));

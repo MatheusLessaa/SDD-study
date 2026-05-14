@@ -14,7 +14,7 @@ public class GameServiceTests
         var service = new GameService(repository);
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            service.CreateAsync(new CreateGameDto("Azul", 1, 1, "Author", 4)));
+            service.CreateAsync(new CreateGameDto("Azul", 1, 1, 1, 4)));
 
         Assert.Contains("already in use", exception.Message);
     }
@@ -27,7 +27,7 @@ public class GameServiceTests
         var service = new GameService(new FakeGameRepository());
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            service.CreateAsync(new CreateGameDto("Azul", 1, 1, "Author", maxPlayers)));
+            service.CreateAsync(new CreateGameDto("Azul", 1, 1, 1, maxPlayers)));
 
         Assert.Contains("MaxPlayers", exception.Message);
     }
@@ -37,7 +37,7 @@ public class GameServiceTests
     {
         var service = new GameService(new FakeGameRepository());
 
-        var created = await service.CreateAsync(new CreateGameDto("Azul", 1, 2, "Michael Kiesling", 4));
+        var created = await service.CreateAsync(new CreateGameDto("Azul", 1, 2, 1, 4));
 
         Assert.Equal(1, created.Id);
         Assert.Equal("Azul", created.Name);
@@ -45,9 +45,21 @@ public class GameServiceTests
         Assert.Equal(2, created.GenreId);
         Assert.Equal("Galapagos", created.PublisherName);
         Assert.Equal("Family", created.GenreName);
-        Assert.Equal("Michael Kiesling", created.Author);
+        Assert.Equal(1, created.AuthorId);
+        Assert.Equal("Michael Kiesling", created.AuthorName);
         Assert.Equal(4, created.MaxPlayers);
         Assert.True(created.IsActive);
+    }
+
+    [Fact]
+    public async Task Create_rejects_invalid_author_id()
+    {
+        var service = new GameService(new FakeGameRepository());
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            service.CreateAsync(new CreateGameDto("Azul", 1, 1, 99, 4)));
+
+        Assert.Contains("AuthorId", exception.Message);
     }
 
     [Fact]
@@ -62,7 +74,7 @@ public class GameServiceTests
             "Azul",
             1,
             2,
-            "Updated Author",
+            2,
             3,
             4,
             true));
@@ -70,7 +82,8 @@ public class GameServiceTests
         Assert.Equal(game.Id, updated.Id);
         Assert.Equal("Azul", updated.Name);
         Assert.Equal(3, updated.TimesPlayed);
-        Assert.Equal("Updated Author", updated.Author);
+        Assert.Equal(2, updated.AuthorId);
+        Assert.Equal("Klaus Teuber", updated.AuthorName);
     }
 
     [Fact]
@@ -82,7 +95,7 @@ public class GameServiceTests
         var service = new GameService(repository);
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            service.UpdateAsync(new UpdateGameDto(target.Id, "Existing", 1, 1, "Author", 0, 4, true)));
+            service.UpdateAsync(new UpdateGameDto(target.Id, "Existing", 1, 1, 1, 0, 4, true)));
 
         Assert.Contains("already in use", exception.Message);
     }
@@ -148,7 +161,7 @@ public class GameServiceTests
             Name = name,
             PublisherId = publisherId,
             GenreId = 1,
-            Author = "Author",
+            AuthorId = 1,
             MaxPlayers = 4,
             IsActive = isActive
         };
@@ -231,7 +244,7 @@ public class GameServiceTests
 
             if (!string.IsNullOrWhiteSpace(filter.Author))
             {
-                query = query.Where(game => game.Author.Contains(filter.Author));
+                query = query.Where(game => ResolveAuthorName(game.AuthorId).Contains(filter.Author));
             }
 
             if (filter.GenreId.HasValue)
@@ -256,6 +269,17 @@ public class GameServiceTests
                 Math.Max(page, 1),
                 IGameRepository.PageSize,
                 totalCount));
+        }
+
+        private static string ResolveAuthorName(int authorId)
+        {
+            return authorId switch
+            {
+                1 => "Michael Kiesling",
+                2 => "Klaus Teuber",
+                3 => "Jacob Fryxelius",
+                _ => $"#{authorId}"
+            };
         }
     }
 }

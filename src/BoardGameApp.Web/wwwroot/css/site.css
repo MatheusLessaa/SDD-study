@@ -158,12 +158,6 @@ a {
     margin: 0;
 }
 
-.topbar-actions {
-    align-items: center;
-    display: flex;
-    gap: 18px;
-}
-
 .icon-button {
     align-items: center;
     background: transparent;
@@ -181,21 +175,6 @@ a {
 .icon-button:focus {
     color: var(--secondary);
     outline: none;
-}
-
-.profile-avatar {
-    align-items: center;
-    background: linear-gradient(135deg, #213757, #6f8aa3);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 999px;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
-    color: #ffffff;
-    display: flex;
-    font-size: 12px;
-    font-weight: 800;
-    height: 32px;
-    justify-content: center;
-    width: 32px;
 }
 
 .main-canvas {
@@ -888,10 +867,6 @@ a {
         left: 0;
         padding: 16px;
         position: static;
-    }
-
-    .topbar-actions {
-        gap: 8px;
     }
 
     .main-canvas {

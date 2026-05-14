@@ -12,7 +12,7 @@ public class GameDtoTests
             "Azul",
             PublisherId: 1,
             GenreId: 2,
-            "Michael Kiesling",
+            AuthorId: 3,
             MaxPlayers: 4);
 
         var game = dto.ToEntity();
@@ -20,7 +20,7 @@ public class GameDtoTests
         Assert.Equal("Azul", game.Name);
         Assert.Equal(1, game.PublisherId);
         Assert.Equal(2, game.GenreId);
-        Assert.Equal("Michael Kiesling", game.Author);
+        Assert.Equal(3, game.AuthorId);
         Assert.Equal(0, game.TimesPlayed);
         Assert.Equal(4, game.MaxPlayers);
         Assert.True(game.IsActive);
@@ -35,7 +35,7 @@ public class GameDtoTests
             Name = "Before",
             PublisherId = 1,
             GenreId = 1,
-            Author = "Before Author",
+            AuthorId = 1,
             TimesPlayed = 1,
             MaxPlayers = 2
         };
@@ -44,7 +44,7 @@ public class GameDtoTests
             "After",
             PublisherId: 2,
             GenreId: 3,
-            "After Author",
+            AuthorId: 2,
             TimesPlayed: 9,
             MaxPlayers: 5,
             IsActive: false);
@@ -55,7 +55,7 @@ public class GameDtoTests
         Assert.Equal("After", game.Name);
         Assert.Equal(2, game.PublisherId);
         Assert.Equal(3, game.GenreId);
-        Assert.Equal("After Author", game.Author);
+        Assert.Equal(2, game.AuthorId);
         Assert.Equal(9, game.TimesPlayed);
         Assert.Equal(5, game.MaxPlayers);
         Assert.False(game.IsActive);
@@ -70,7 +70,7 @@ public class GameDtoTests
             Name = "Catan",
             PublisherId = 2,
             GenreId = 1,
-            Author = "Klaus Teuber",
+            AuthorId = 2,
             TimesPlayed = 15,
             MaxPlayers = 4,
             IsActive = false
@@ -82,7 +82,8 @@ public class GameDtoTests
         Assert.Equal("Catan", dto.Name);
         Assert.Equal(2, dto.PublisherId);
         Assert.Equal(1, dto.GenreId);
-        Assert.Equal("Klaus Teuber", dto.Author);
+        Assert.Equal(2, dto.AuthorId);
+        Assert.Equal("Klaus Teuber", dto.AuthorName);
         Assert.Equal(15, dto.TimesPlayed);
         Assert.Equal(4, dto.MaxPlayers);
         Assert.False(dto.IsActive);

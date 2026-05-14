@@ -87,7 +87,12 @@ public sealed class GameRepository : IGameRepository
 
         if (!string.IsNullOrWhiteSpace(filter.Author))
         {
-            query = query.Where(game => game.Author.Contains(filter.Author));
+            var authorIds = await dbContext.Authors
+                .Where(author => author.Name.Contains(filter.Author))
+                .Select(author => author.Id)
+                .ToListAsync(cancellationToken);
+
+            query = query.Where(game => authorIds.Contains(game.AuthorId));
         }
 
         if (filter.GenreId.HasValue)

@@ -13,7 +13,7 @@ public class GameEntityTests
         Assert.Equal(string.Empty, game.Name);
         Assert.Equal(0, game.PublisherId);
         Assert.Equal(0, game.GenreId);
-        Assert.Equal(string.Empty, game.Author);
+        Assert.Equal(0, game.AuthorId);
         Assert.Equal(0, game.TimesPlayed);
         Assert.Equal(0, game.MaxPlayers);
         Assert.True(game.IsActive);
@@ -28,7 +28,7 @@ public class GameEntityTests
             Name = "Azul",
             PublisherId = 5,
             GenreId = 8,
-            Author = "Michael Kiesling",
+            AuthorId = 2,
             TimesPlayed = 12,
             MaxPlayers = 4,
             IsActive = false
@@ -38,7 +38,7 @@ public class GameEntityTests
         Assert.Equal("Azul", game.Name);
         Assert.Equal(5, game.PublisherId);
         Assert.Equal(8, game.GenreId);
-        Assert.Equal("Michael Kiesling", game.Author);
+        Assert.Equal(2, game.AuthorId);
         Assert.Equal(12, game.TimesPlayed);
         Assert.Equal(4, game.MaxPlayers);
         Assert.False(game.IsActive);

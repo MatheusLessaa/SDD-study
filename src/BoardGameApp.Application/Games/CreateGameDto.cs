@@ -6,7 +6,7 @@ public sealed record CreateGameDto(
     string Name,
     int PublisherId,
     int GenreId,
-    string Author,
+    int AuthorId,
     int MaxPlayers)
 {
     public Game ToEntity()
@@ -16,7 +16,7 @@ public sealed record CreateGameDto(
             Name = Name,
             PublisherId = PublisherId,
             GenreId = GenreId,
-            Author = Author,
+            AuthorId = AuthorId,
             MaxPlayers = MaxPlayers
         };
     }

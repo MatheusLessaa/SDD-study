@@ -314,7 +314,7 @@ public class MatchServiceTests
             Name = "Azul",
             PublisherId = 1,
             GenreId = 1,
-            Author = "Author",
+            AuthorId = 1,
             MaxPlayers = maxPlayers
         };
     }

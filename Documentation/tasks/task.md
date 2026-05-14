@@ -513,3 +513,34 @@ Every task must satisfy:
 * ✔ Tests cover successful increment and non-increment cases.
 
 ---
+
+## Task 7.6 — Add Author FK and Dropdown to Games
+
+**Acceptance Criteria**
+
+* ✔ Authors supporting table exists.
+* ✔ Game stores `AuthorId` as an FK instead of free-text author.
+* ✔ Add Game displays author names in a dropdown.
+* ✔ Add Game submits selected `AuthorId` to the backend.
+* ✔ Game create/edit flow persists `AuthorId`.
+* ✔ Games table displays author name.
+* ✔ Invalid author IDs are rejected by database or service validation.
+* ✔ Migration updates the schema safely.
+* ✔ Tests cover author FK mapping and dropdown-backed create flow.
+
+---
+
+## Task 7.7 - Remove Account-Related Items from Topbar
+
+**Acceptance Criteria**
+
+* The topbar no longer displays the notification bell icon.
+* The topbar no longer displays the help/question icon.
+* The topbar no longer displays the user/avatar/profile placeholder.
+* The layout remains visually aligned after removing the right-side items.
+* No authentication, logged-user, account, or notification affordance remains in the base layout.
+* Unused CSS related only to the removed topbar account items is removed or left only if still used elsewhere.
+* Project builds successfully.
+* Manual UI validation confirms the topbar, sidebar, and page content still render correctly.
+
+---

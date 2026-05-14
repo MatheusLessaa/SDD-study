@@ -217,7 +217,7 @@ public class MatchControllerTests
             CancellationToken cancellationToken = default)
         {
             return Task.FromResult(new PagedResult<GameViewDto>(
-                [new GameViewDto(1, "Azul", 1, 1, "Michael Kiesling", 0, 4, true)],
+                [new GameViewDto(1, "Azul", 1, 1, 1, 0, 4, true)],
                 1,
                 20,
                 1));

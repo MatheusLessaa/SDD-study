@@ -10,7 +10,7 @@ public class Game : Entity
 
     public int GenreId { get; set; }
 
-    public string Author { get; set; } = string.Empty;
+    public int AuthorId { get; set; }
 
     public int TimesPlayed { get; set; }
 

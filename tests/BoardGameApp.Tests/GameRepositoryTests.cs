@@ -1,4 +1,5 @@
 using BoardGameApp.Application.Games;
+using BoardGameApp.Domain.Authors;
 using BoardGameApp.Domain.Games;
 using BoardGameApp.Domain.Genres;
 using BoardGameApp.Domain.Publishers;
@@ -35,7 +36,7 @@ public class GameRepositoryTests
         var game = await repository.CreateAsync(CreateGame("Before", 1, 1));
 
         game.Name = "After";
-        game.Author = "Updated Author";
+        game.AuthorId = 2;
         game.MaxPlayers = 5;
         await repository.UpdateAsync(game);
 
@@ -43,7 +44,7 @@ public class GameRepositoryTests
 
         Assert.NotNull(updated);
         Assert.Equal("After", updated.Name);
-        Assert.Equal("Updated Author", updated.Author);
+        Assert.Equal(2, updated.AuthorId);
         Assert.Equal(5, updated.MaxPlayers);
     }
 
@@ -130,8 +131,8 @@ public class GameRepositoryTests
         await using var dbContext = CreateDbContext();
         await SeedSupportingDataAsync(dbContext);
         var repository = new GameRepository(dbContext);
-        await repository.CreateAsync(CreateGame("Azul", 1, 1, "Michael Kiesling"));
-        await repository.CreateAsync(CreateGame("Catan", 1, 1, "Klaus Teuber"));
+        await repository.CreateAsync(CreateGame("Azul", 1, 1, authorId: 1));
+        await repository.CreateAsync(CreateGame("Catan", 1, 1, authorId: 2));
 
         var result = await repository.ListAsync(new GameFilter(Author: "Klaus"));
 
@@ -175,9 +176,9 @@ public class GameRepositoryTests
         await using var dbContext = CreateDbContext();
         await SeedSupportingDataAsync(dbContext);
         var repository = new GameRepository(dbContext);
-        await repository.CreateAsync(CreateGame("Azul", 1, 1, "Michael Kiesling"));
-        await repository.CreateAsync(CreateGame("Azul Summer Pavilion", 2, 1, "Michael Kiesling"));
-        await repository.CreateAsync(CreateGame("Catan", 1, 2, "Klaus Teuber"));
+        await repository.CreateAsync(CreateGame("Azul", 1, 1, authorId: 1));
+        await repository.CreateAsync(CreateGame("Azul Summer Pavilion", 2, 1, authorId: 1));
+        await repository.CreateAsync(CreateGame("Catan", 1, 2, authorId: 2));
 
         var result = await repository.ListAsync(new GameFilter(
             Name: "Azul",
@@ -216,7 +217,7 @@ public class GameRepositoryTests
         string name,
         int publisherId,
         int genreId,
-        string author = "Author",
+        int authorId = 1,
         bool isActive = true)
     {
         return new Game
@@ -224,7 +225,7 @@ public class GameRepositoryTests
             Name = name,
             PublisherId = publisherId,
             GenreId = genreId,
-            Author = author,
+            AuthorId = authorId,
             MaxPlayers = 4,
             IsActive = isActive
         };
@@ -238,6 +239,9 @@ public class GameRepositoryTests
         dbContext.Publishers.AddRange(
             new Publisher { Id = 1, Name = "Galapagos" },
             new Publisher { Id = 2, Name = "Devir" });
+        dbContext.Authors.AddRange(
+            new Author { Id = 1, Name = "Michael Kiesling" },
+            new Author { Id = 2, Name = "Klaus Teuber" });
         await dbContext.SaveChangesAsync();
     }
 

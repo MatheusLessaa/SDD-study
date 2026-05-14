@@ -1,3 +1,4 @@
+using BoardGameApp.Domain.Authors;
 using BoardGameApp.Domain.Games;
 using BoardGameApp.Domain.Genres;
 using BoardGameApp.Domain.Matches;
@@ -24,6 +25,8 @@ public class AppDbContext : DbContext
 
     public DbSet<Publisher> Publishers => Set<Publisher>();
 
+    public DbSet<Author> Authors => Set<Author>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -48,9 +51,6 @@ public class AppDbContext : DbContext
             entity.Property(game => game.Name)
                 .IsRequired();
 
-            entity.Property(game => game.Author)
-                .IsRequired();
-
             entity.HasIndex(game => new { game.Name, game.PublisherId })
                 .IsUnique();
 
@@ -62,6 +62,11 @@ public class AppDbContext : DbContext
             entity.HasOne<Genre>()
                 .WithMany()
                 .HasForeignKey(game => game.GenreId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<Author>()
+                .WithMany()
+                .HasForeignKey(game => game.AuthorId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
@@ -85,6 +90,17 @@ public class AppDbContext : DbContext
                 new Publisher { Id = 1, Name = "Galapagos" },
                 new Publisher { Id = 2, Name = "Devir" },
                 new Publisher { Id = 3, Name = "Meeple BR" });
+        });
+
+        modelBuilder.Entity<Author>(entity =>
+        {
+            entity.Property(author => author.Name)
+                .IsRequired();
+
+            entity.HasData(
+                new Author { Id = 1, Name = "Michael Kiesling" },
+                new Author { Id = 2, Name = "Klaus Teuber" },
+                new Author { Id = 3, Name = "Jacob Fryxelius" });
         });
 
         modelBuilder.Entity<Match>(entity =>

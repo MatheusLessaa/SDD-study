@@ -15,6 +15,7 @@ public sealed class GameService : IGameService
         CreateGameDto dto,
         CancellationToken cancellationToken = default)
     {
+        ValidateAuthorId(dto.AuthorId);
         ValidateMaxPlayers(dto.MaxPlayers);
         await EnsureUniqueNameAndPublisherAsync(dto.Name, dto.PublisherId, excludingId: null, cancellationToken);
 
@@ -27,6 +28,7 @@ public sealed class GameService : IGameService
         UpdateGameDto dto,
         CancellationToken cancellationToken = default)
     {
+        ValidateAuthorId(dto.AuthorId);
         ValidateMaxPlayers(dto.MaxPlayers);
 
         var game = await gameRepository.GetByIdAsync(dto.Id, cancellationToken)
@@ -94,6 +96,14 @@ public sealed class GameService : IGameService
         if (maxPlayers < 1)
         {
             throw new InvalidOperationException("MaxPlayers must be greater than zero.");
+        }
+    }
+
+    private static void ValidateAuthorId(int authorId)
+    {
+        if (authorId is < 1 or > 3)
+        {
+            throw new InvalidOperationException("AuthorId must reference an existing author.");
         }
     }
 

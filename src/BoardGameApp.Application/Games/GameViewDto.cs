@@ -7,12 +7,13 @@ public sealed record GameViewDto(
     string Name,
     int PublisherId,
     int GenreId,
-    string Author,
+    int AuthorId,
     int TimesPlayed,
     int MaxPlayers,
     bool IsActive,
     string PublisherName = "",
-    string GenreName = "")
+    string GenreName = "",
+    string AuthorName = "")
 {
     private static readonly IReadOnlyDictionary<int, string> PublisherNames = new Dictionary<int, string>
     {
@@ -28,6 +29,13 @@ public sealed record GameViewDto(
         [3] = "Party"
     };
 
+    private static readonly IReadOnlyDictionary<int, string> AuthorNames = new Dictionary<int, string>
+    {
+        [1] = "Michael Kiesling",
+        [2] = "Klaus Teuber",
+        [3] = "Jacob Fryxelius"
+    };
+
     public static GameViewDto FromEntity(Game game)
     {
         return new GameViewDto(
@@ -35,12 +43,13 @@ public sealed record GameViewDto(
             game.Name,
             game.PublisherId,
             game.GenreId,
-            game.Author,
+            game.AuthorId,
             game.TimesPlayed,
             game.MaxPlayers,
             game.IsActive,
             ResolveName(PublisherNames, game.PublisherId),
-            ResolveName(GenreNames, game.GenreId));
+            ResolveName(GenreNames, game.GenreId),
+            ResolveName(AuthorNames, game.AuthorId));
     }
 
     private static string ResolveName(IReadOnlyDictionary<int, string> names, int id)

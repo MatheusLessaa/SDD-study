@@ -42,7 +42,7 @@ public class GameControllerTests
     {
         var service = new FakeGameService();
         var controller = new GameController(service);
-        var dto = new CreateGameDto("Azul", 1, 2, "Michael Kiesling", 4);
+        var dto = new CreateGameDto("Azul", 1, 2, 1, 4);
 
         var result = await controller.Create(dto);
 
@@ -67,7 +67,7 @@ public class GameControllerTests
     {
         var service = new FakeGameService();
         var controller = new GameController(service);
-        var dto = new UpdateGameDto(1, "Azul", 1, 2, "Michael Kiesling", 3, 4, true);
+        var dto = new UpdateGameDto(1, "Azul", 1, 2, 1, 3, 4, true);
 
         var result = await controller.Edit(dto);
 
@@ -124,7 +124,7 @@ public class GameControllerTests
             "Azul",
             1,
             2,
-            "Michael Kiesling",
+            1,
             3,
             4,
             true);
@@ -140,7 +140,7 @@ public class GameControllerTests
                 dto.Name,
                 dto.PublisherId,
                 dto.GenreId,
-                dto.Author,
+                dto.AuthorId,
                 0,
                 dto.MaxPlayers,
                 true));
@@ -157,7 +157,7 @@ public class GameControllerTests
                 dto.Name,
                 dto.PublisherId,
                 dto.GenreId,
-                dto.Author,
+                dto.AuthorId,
                 dto.TimesPlayed,
                 dto.MaxPlayers,
                 dto.IsActive));
@@ -195,7 +195,7 @@ public class GameControllerTests
             LastIncludeInactive = includeInactive;
 
             return Task.FromResult(new PagedResult<GameViewDto>(
-                [new GameViewDto(1, "Azul", 1, 2, "Michael Kiesling", 3, 4, true)],
+                [new GameViewDto(1, "Azul", 1, 2, 1, 3, 4, true)],
                 page,
                 20,
                 1));

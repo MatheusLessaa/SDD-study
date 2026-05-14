@@ -7,7 +7,7 @@ public sealed record UpdateGameDto(
     string Name,
     int PublisherId,
     int GenreId,
-    string Author,
+    int AuthorId,
     int TimesPlayed,
     int MaxPlayers,
     bool IsActive)
@@ -17,7 +17,7 @@ public sealed record UpdateGameDto(
         game.Name = Name;
         game.PublisherId = PublisherId;
         game.GenreId = GenreId;
-        game.Author = Author;
+        game.AuthorId = AuthorId;
         game.TimesPlayed = TimesPlayed;
         game.MaxPlayers = MaxPlayers;
         game.IsActive = IsActive;

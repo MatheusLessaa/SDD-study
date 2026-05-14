@@ -20,9 +20,14 @@
             </div>
 
             <div class="form-field">
-                <label asp-for="Author">Author</label>
-                <input asp-for="Author" />
-                <span asp-validation-for="Author" class="field-validation"></span>
+                <label asp-for="AuthorId">Author</label>
+                <select asp-for="AuthorId">
+                    <option value="">Select an author</option>
+                    <option value="1">Michael Kiesling</option>
+                    <option value="2">Klaus Teuber</option>
+                    <option value="3">Jacob Fryxelius</option>
+                </select>
+                <span asp-validation-for="AuthorId" class="field-validation"></span>
             </div>
 
             <div class="form-grid two-columns">

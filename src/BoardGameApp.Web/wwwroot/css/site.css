@@ -246,6 +246,15 @@ a {
     grid-template-columns: minmax(90px, 0.45fr) minmax(190px, 1fr) minmax(190px, 1fr) minmax(120px, 0.55fr) minmax(140px, 0.65fr);
 }
 
+.games-filters-grid .checkbox-field {
+    grid-column: 1 / 2;
+}
+
+.games-filters-grid .filter-actions {
+    grid-column: 2 / -1;
+    justify-content: flex-start;
+}
+
 .match-filters-grid {
     grid-template-columns: minmax(120px, 0.45fr) minmax(180px, 0.8fr) auto;
 }
@@ -894,6 +903,11 @@ a {
         align-items: stretch;
         flex-direction: column;
         grid-template-columns: 1fr;
+    }
+
+    .games-filters-grid .checkbox-field,
+    .games-filters-grid .filter-actions {
+        grid-column: auto;
     }
 
     .filter-actions .primary-button,

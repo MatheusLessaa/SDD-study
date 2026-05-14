@@ -69,6 +69,12 @@ public sealed class GameService : IGameService
         return game is null ? null : GameViewDto.FromEntity(game);
     }
 
+    public Task<IReadOnlyList<GenreOptionDto>> ListGenreOptionsAsync(
+        CancellationToken cancellationToken = default)
+    {
+        return gameRepository.ListGenreOptionsAsync(cancellationToken);
+    }
+
     public async Task<PagedResult<GameViewDto>> ListAsync(
         GameFilter filter,
         int page = 1,

@@ -32,10 +32,12 @@ public sealed class GameController : Controller
             page,
             includeInactive,
             cancellationToken);
+        var genreOptions = await gameService.ListGenreOptionsAsync(cancellationToken);
 
         return View(new GameIndexViewModel
         {
             Games = games,
+            GenreOptions = genreOptions,
             Id = id,
             Name = name,
             Author = author,

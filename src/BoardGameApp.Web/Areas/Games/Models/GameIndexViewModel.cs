@@ -7,6 +7,8 @@ public sealed class GameIndexViewModel
 {
     public required PagedResult<GameViewDto> Games { get; init; }
 
+    public required IReadOnlyList<GenreOptionDto> GenreOptions { get; init; }
+
     public int? Id { get; init; }
 
     public string? Name { get; init; }

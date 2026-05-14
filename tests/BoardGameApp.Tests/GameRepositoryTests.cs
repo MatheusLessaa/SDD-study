@@ -156,6 +156,29 @@ public class GameRepositoryTests
     }
 
     [Fact]
+    public async Task List_genre_options_returns_genre_names_for_dropdown()
+    {
+        await using var dbContext = CreateDbContext();
+        await SeedSupportingDataAsync(dbContext);
+        var repository = new GameRepository(dbContext);
+
+        var result = await repository.ListGenreOptionsAsync();
+
+        Assert.Collection(
+            result,
+            genre =>
+            {
+                Assert.Equal(2, genre.Id);
+                Assert.Equal("Family", genre.Name);
+            },
+            genre =>
+            {
+                Assert.Equal(1, genre.Id);
+                Assert.Equal("Strategy", genre.Name);
+            });
+    }
+
+    [Fact]
     public async Task List_filters_by_publisher()
     {
         await using var dbContext = CreateDbContext();

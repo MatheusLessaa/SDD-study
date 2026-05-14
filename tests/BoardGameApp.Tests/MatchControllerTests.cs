@@ -222,6 +222,12 @@ public class MatchControllerTests
                 20,
                 1));
         }
+
+        public Task<IReadOnlyList<GenreOptionDto>> ListGenreOptionsAsync(
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<IReadOnlyList<GenreOptionDto>>([]);
+        }
     }
 
     private sealed class FakePlayerService : IPlayerService

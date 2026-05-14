@@ -154,6 +154,32 @@ public class GameServiceTests
         Assert.Equal("Strategy", result.Items[0].GenreName);
     }
 
+    [Fact]
+    public async Task List_genre_options_returns_genres_for_filter_dropdown()
+    {
+        var service = new GameService(new FakeGameRepository());
+
+        var result = await service.ListGenreOptionsAsync();
+
+        Assert.Collection(
+            result,
+            genre =>
+            {
+                Assert.Equal(1, genre.Id);
+                Assert.Equal("Strategy", genre.Name);
+            },
+            genre =>
+            {
+                Assert.Equal(2, genre.Id);
+                Assert.Equal("Family", genre.Name);
+            },
+            genre =>
+            {
+                Assert.Equal(3, genre.Id);
+                Assert.Equal("Party", genre.Name);
+            });
+    }
+
     private static Game CreateGame(string name, int publisherId, bool isActive = true)
     {
         return new Game
@@ -217,6 +243,19 @@ public class GameServiceTests
             {
                 game.IsActive = false;
             }
+        }
+
+        public Task<IReadOnlyList<GenreOptionDto>> ListGenreOptionsAsync(
+            CancellationToken cancellationToken = default)
+        {
+            IReadOnlyList<GenreOptionDto> options =
+            [
+                new GenreOptionDto(1, "Strategy"),
+                new GenreOptionDto(2, "Family"),
+                new GenreOptionDto(3, "Party")
+            ];
+
+            return Task.FromResult(options);
         }
 
         public Task<PagedResult<Game>> ListAsync(

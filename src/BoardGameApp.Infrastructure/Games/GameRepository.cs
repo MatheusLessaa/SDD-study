@@ -61,6 +61,15 @@ public sealed class GameRepository : IGameRepository
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<GenreOptionDto>> ListGenreOptionsAsync(
+        CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Genres
+            .OrderBy(genre => genre.Name)
+            .Select(genre => new GenreOptionDto(genre.Id, genre.Name))
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<PagedResult<Game>> ListAsync(
         GameFilter filter,
         int page = 1,

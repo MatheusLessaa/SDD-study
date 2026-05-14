@@ -14,6 +14,9 @@ public interface IGameService
 
     Task<GameViewDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<GenreOptionDto>> ListGenreOptionsAsync(
+        CancellationToken cancellationToken = default);
+
     Task<PagedResult<GameViewDto>> ListAsync(
         GameFilter filter,
         int page = 1,

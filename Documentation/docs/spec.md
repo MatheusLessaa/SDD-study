@@ -132,7 +132,7 @@ Each context is **isolated and self-contained**.
   * Name (partial)
   * Publisher
   * Author (partial)
-  * Genre
+  * Genre, selected from a dropdown displaying genre names and submitting the corresponding GenreId
   * Id
 * Sorting:
 
@@ -217,6 +217,9 @@ Each context is **isolated and self-contained**.
 ### 6.5 Features
 
 * List matches (max 20 per page)
+* The matches list must display the game name as the primary title in the Match column, instead of generic labels such as `Match #1`.
+* The matches list must display player full names instead of raw player IDs.
+* Raw match, game, and player IDs may be shown only as secondary metadata when useful, not as the main display value.
 
 * Filters:
 

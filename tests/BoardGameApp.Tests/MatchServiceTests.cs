@@ -161,6 +161,9 @@ public class MatchServiceTests
         Assert.Single(result.Items);
         Assert.IsType<MatchViewDto>(result.Items[0]);
         Assert.Equal(2, result.Items[0].WinnerPlayerId);
+        Assert.Equal("Azul", result.Items[0].GameName);
+        Assert.Equal("Zoe Player, Alice Player", result.Items[0].PlayerNames);
+        Assert.Equal("Alice Player", result.Items[0].WinnerPlayerName);
         Assert.Equal(new DateTime(2026, 5, 12, 18, 30, 0), result.Items[0].CreatedAt);
     }
 
@@ -423,6 +426,12 @@ public class MatchServiceTests
         public Task SoftDeleteAsync(int id, CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
+        }
+
+        public Task<IReadOnlyList<GenreOptionDto>> ListGenreOptionsAsync(
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<IReadOnlyList<GenreOptionDto>>([]);
         }
 
         public Task<PagedResult<Game>> ListAsync(

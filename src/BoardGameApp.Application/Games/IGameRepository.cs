@@ -21,6 +21,9 @@ public interface IGameRepository
 
     Task SoftDeleteAsync(int id, CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<GenreOptionDto>> ListGenreOptionsAsync(
+        CancellationToken cancellationToken = default);
+
     Task<PagedResult<Game>> ListAsync(
         GameFilter filter,
         int page = 1,

@@ -544,3 +544,39 @@ Every task must satisfy:
 * Manual UI validation confirms the topbar, sidebar, and page content still render correctly.
 
 ---
+
+## Task 7.8 - Display Game and Player Names in Matches List
+
+**Acceptance Criteria**
+
+* The Matches table displays the game name as the primary text in the Match column.
+* The Matches table no longer uses generic primary labels such as `Match #1` when a game name is available.
+* The Players column displays player full names instead of raw comma-separated player IDs.
+* Player names preserve the same order as the stored `PlayerIds` sequence.
+* Raw IDs may remain only as secondary metadata when useful.
+* Existing match filters and pagination continue to work.
+* Existing match creation and score editing behavior remains unchanged.
+* Tests cover game name and player name mapping for match list data.
+* Project builds successfully.
+* Manual UI validation confirms the Matches list displays human-readable names.
+
+---
+
+## Task 7.9 - Use Genre Dropdown Filter in Games List
+
+**Acceptance Criteria**
+
+* Games list Genre filter is rendered as a dropdown/select.
+* Dropdown options display genre names instead of genre IDs.
+* Selecting a genre submits/uses the corresponding `GenreId` internally.
+* Dropdown includes all genres available in the supporting `Genres` table.
+* Dropdown includes an empty/default option to show all genres.
+* Genre filter works together with existing filters.
+* Existing pagination remains unchanged.
+* Games table continues to display genre names.
+* UI remains aligned with `Documentation/visual-reference`.
+* Tests cover genre dropdown data and filtering by selected genre.
+* Project builds successfully.
+* Manual UI validation confirms the Games filter displays genre names and filters correctly.
+
+---

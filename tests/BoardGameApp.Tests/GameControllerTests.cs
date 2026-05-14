@@ -31,6 +31,18 @@ public class GameControllerTests
         Assert.Equal(2, model.GenreId);
         Assert.Equal(3, model.PublisherId);
         Assert.True(model.IncludeInactive);
+        Assert.Collection(
+            model.GenreOptions,
+            genre =>
+            {
+                Assert.Equal(1, genre.Id);
+                Assert.Equal("Strategy", genre.Name);
+            },
+            genre =>
+            {
+                Assert.Equal(2, genre.Id);
+                Assert.Equal("Family", genre.Name);
+            });
         Assert.Equal(new GameFilter(7, "Azul", "Michael", 2, 3), service.LastFilter);
         Assert.Equal(2, service.LastPage);
         Assert.True(service.LastIncludeInactive);
@@ -199,6 +211,18 @@ public class GameControllerTests
                 page,
                 20,
                 1));
+        }
+
+        public Task<IReadOnlyList<GenreOptionDto>> ListGenreOptionsAsync(
+            CancellationToken cancellationToken = default)
+        {
+            IReadOnlyList<GenreOptionDto> options =
+            [
+                new GenreOptionDto(1, "Strategy"),
+                new GenreOptionDto(2, "Family")
+            ];
+
+            return Task.FromResult(options);
         }
     }
 }

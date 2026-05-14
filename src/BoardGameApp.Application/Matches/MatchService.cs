@@ -84,15 +84,54 @@ public sealed class MatchService : IMatchService
         CancellationToken cancellationToken = default)
     {
         var matches = await matchRepository.ListAsync(filter, page, cancellationToken);
-        var items = matches.Items
-            .Select(MatchViewDto.FromEntity)
-            .ToList();
+        var items = new List<MatchViewDto>();
+
+        foreach (var match in matches.Items)
+        {
+            items.Add(await EnrichForListAsync(match, cancellationToken));
+        }
 
         return new PagedResult<MatchViewDto>(
             items,
             matches.Page,
             matches.PageSize,
             matches.TotalCount);
+    }
+
+    private async Task<MatchViewDto> EnrichForListAsync(
+        Match match,
+        CancellationToken cancellationToken)
+    {
+        var game = await gameRepository.GetByIdAsync(match.GameId, cancellationToken);
+        var playerIds = ParsePlayerIds(match.PlayerIds);
+        var playerNames = new List<string>();
+        var winnerPlayerName = string.Empty;
+
+        foreach (var playerId in playerIds)
+        {
+            var player = await playerRepository.GetByIdAsync(playerId, cancellationToken);
+            var playerName = player?.FullName ?? $"Player #{playerId}";
+
+            playerNames.Add(playerName);
+
+            if (playerId == match.WinnerPlayerId)
+            {
+                winnerPlayerName = playerName;
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(winnerPlayerName))
+        {
+            var winner = await playerRepository.GetByIdAsync(match.WinnerPlayerId, cancellationToken);
+            winnerPlayerName = winner?.FullName ?? $"Player #{match.WinnerPlayerId}";
+        }
+
+        return MatchViewDto.FromEntity(match) with
+        {
+            GameName = game?.Name ?? $"Game #{match.GameId}",
+            PlayerNames = string.Join(", ", playerNames),
+            WinnerPlayerName = winnerPlayerName
+        };
     }
 
     private static IReadOnlyList<int> ParsePlayerIds(string playerIds)

@@ -45,7 +45,6 @@
             <thead>
                 <tr>
                     <th>Match</th>
-                    <th>Game</th>
                     <th>Players</th>
                     <th>Scores</th>
                     <th>Winner</th>
@@ -57,7 +56,7 @@
                 @if (Model.Matches.Items.Count == 0)
                 {
                     <tr>
-                        <td colspan="7">
+                        <td colspan="6">
                             <div class="empty-state">
                                 <span class="material-symbols-outlined" aria-hidden="true">history</span>
                                 <p>No matches found.</p>
@@ -74,16 +73,15 @@
                                 <div class="identity-cell">
                                     <span class="avatar-token">#@match.Id</span>
                                     <div>
-                                        <p>Match #@match.Id</p>
-                                        <small>Score record</small>
+                                        <p>@match.GameName</p>
+                                        <small>Match #@match.Id</small>
                                     </div>
                                 </div>
                             </td>
-                            <td>#@match.GameId</td>
-                            <td>@match.PlayerIds</td>
+                            <td>@match.PlayerNames</td>
                             <td>@match.Scores</td>
                             <td>
-                                <span class="status-pill active">Player #@match.WinnerPlayerId</span>
+                                <span class="status-pill active">@match.WinnerPlayerName</span>
                             </td>
                             <td>@match.CreatedAt.ToString("g")</td>
                             <td>

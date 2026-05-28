@@ -1,0 +1,60 @@
+@model MatchViewDto
+
+<article class="match-details-content">
+    <header class="form-card-header">
+        <h2>@Model.GameName</h2>
+        <p>Read-only match information.</p>
+    </header>
+
+    <dl class="locked-match-summary match-details-summary" aria-label="Match details">
+        <div>
+            <dt>Game</dt>
+            <dd>@Model.GameName</dd>
+        </div>
+        <div>
+            <dt>Code</dt>
+            <dd>Match #@Model.Id</dd>
+        </div>
+        <div>
+            <dt>Date</dt>
+            <dd>@Model.CreatedDateDisplay</dd>
+        </div>
+        <div>
+            <dt>Winner</dt>
+            <dd>@Model.WinnerPlayerName</dd>
+        </div>
+    </dl>
+
+    <section class="match-details-section" aria-labelledby="matchScoresTitle">
+        <h3 id="matchScoresTitle">Players and Scores</h3>
+        <div class="details-table-shell">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var playerScore in Model.PlayerScoreDetails)
+                    {
+                        <tr>
+                            <td>
+                                <div class="identity-cell">
+                                    <span class="avatar-token">#@playerScore.PlayerId</span>
+                                    <div>
+                                        <p>@playerScore.PlayerName</p>
+                                        <small>Player #@playerScore.PlayerId</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-pill active">@playerScore.Score</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</article>

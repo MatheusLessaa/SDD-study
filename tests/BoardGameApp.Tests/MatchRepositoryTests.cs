@@ -1,4 +1,5 @@
 using BoardGameApp.Application.Matches;
+using BoardGameApp.Domain.Games;
 using BoardGameApp.Domain.Matches;
 using BoardGameApp.Infrastructure.Matches;
 using BoardGameApp.Infrastructure.Persistence;
@@ -73,29 +74,49 @@ public class MatchRepositoryTests
     }
 
     [Fact]
-    public async Task List_filters_by_game_id()
+    public async Task List_filters_by_partial_game_name()
     {
         await using var dbContext = CreateDbContext();
+        await SeedGamesAsync(dbContext);
         var repository = new MatchRepository(dbContext);
         await repository.CreateAsync(CreateMatch(gameId: 1));
         await repository.CreateAsync(CreateMatch(gameId: 2));
         await repository.CreateAsync(CreateMatch(gameId: 2));
 
-        var result = await repository.ListAsync(new MatchFilter(GameId: 2));
+        var result = await repository.ListAsync(new MatchFilter(GameName: "forming"));
 
         Assert.Equal(2, result.Items.Count);
         Assert.All(result.Items, match => Assert.Equal(2, match.GameId));
     }
 
     [Fact]
-    public async Task List_applies_id_and_game_id_filters_together()
+    public async Task List_filters_by_ending_piece_of_game_name()
     {
         await using var dbContext = CreateDbContext();
+        await SeedGamesAsync(dbContext);
+        var repository = new MatchRepository(dbContext);
+        await repository.CreateAsync(CreateMatch(gameId: 1));
+        await repository.CreateAsync(CreateMatch(gameId: 2));
+
+        var result = await repository.ListAsync(new MatchFilter(GameName: "Mars"));
+
+        Assert.Single(result.Items);
+        Assert.Equal(2, result.Items[0].GameId);
+    }
+
+    [Fact]
+    public async Task List_applies_id_and_game_name_filters_together()
+    {
+        await using var dbContext = CreateDbContext();
+        dbContext.Games.AddRange(
+            CreateGame(7, "Terraforming Mars"),
+            CreateGame(8, "Azul"));
+        await dbContext.SaveChangesAsync();
         var repository = new MatchRepository(dbContext);
         var target = await repository.CreateAsync(CreateMatch(gameId: 7));
         await repository.CreateAsync(CreateMatch(gameId: 8));
 
-        var result = await repository.ListAsync(new MatchFilter(target.Id, 7));
+        var result = await repository.ListAsync(new MatchFilter(target.Id, "forming"));
 
         Assert.Single(result.Items);
         Assert.Equal(target.Id, result.Items[0].Id);
@@ -132,6 +153,27 @@ public class MatchRepositoryTests
             PlayerIds = "1,5,8",
             Scores = "10,7,3",
             WinnerPlayerId = 1
+        };
+    }
+
+    private static async Task SeedGamesAsync(AppDbContext dbContext)
+    {
+        dbContext.Games.AddRange(
+            CreateGame(1, "Azul"),
+            CreateGame(2, "Terraforming Mars"));
+        await dbContext.SaveChangesAsync();
+    }
+
+    private static Game CreateGame(int id, string name)
+    {
+        return new Game
+        {
+            Id = id,
+            Name = name,
+            PublisherId = 1,
+            GenreId = 1,
+            AuthorId = 1,
+            MaxPlayers = 4
         };
     }
 

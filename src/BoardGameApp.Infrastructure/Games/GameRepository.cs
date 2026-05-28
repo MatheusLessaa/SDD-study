@@ -70,6 +70,15 @@ public sealed class GameRepository : IGameRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyList<PublisherOptionDto>> ListPublisherOptionsAsync(
+        CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Publishers
+            .OrderBy(publisher => publisher.Name)
+            .Select(publisher => new PublisherOptionDto(publisher.Id, publisher.Name))
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<PagedResult<Game>> ListAsync(
         GameFilter filter,
         int page = 1,

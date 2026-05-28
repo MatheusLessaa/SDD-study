@@ -1,6 +1,8 @@
+using BoardGameApp.Application.Authors;
 using BoardGameApp.Application.Games;
 using BoardGameApp.Application.Matches;
 using BoardGameApp.Application.Players;
+using BoardGameApp.Infrastructure.Authors;
 using BoardGameApp.Infrastructure.Games;
 using BoardGameApp.Infrastructure.Matches;
 using BoardGameApp.Infrastructure.Persistence;
@@ -18,6 +20,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
+        services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IGameRepository, GameRepository>();
         services.AddScoped<IMatchRepository, MatchRepository>();
         services.AddScoped<IPlayerRepository, PlayerRepository>();

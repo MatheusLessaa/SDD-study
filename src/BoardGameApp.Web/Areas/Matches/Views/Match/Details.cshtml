@@ -1,0 +1,14 @@
+@model MatchViewDto
+
+<section class="form-shell">
+    <article class="form-card match-details-card">
+        <partial name="_Details" model="Model" />
+
+        <div class="form-actions">
+            <a class="secondary-button" asp-action="Index">
+                <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+                <span>Back to Matches</span>
+            </a>
+        </div>
+    </article>
+</section>

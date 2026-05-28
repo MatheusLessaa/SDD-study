@@ -1,4 +1,4 @@
-@model UpdateGameDto
+@model GameEditViewModel
 
 <section class="form-shell">
     <div class="form-card">
@@ -32,8 +32,14 @@
 
             <div class="form-grid two-columns">
                 <div class="form-field">
-                    <label asp-for="PublisherId">Publisher Id</label>
-                    <input asp-for="PublisherId" type="number" min="1" />
+                    <label asp-for="PublisherId">Publisher</label>
+                    <select asp-for="PublisherId">
+                        <option value="">Select a publisher</option>
+                        @foreach (var publisher in Model.PublisherOptions)
+                        {
+                            <option value="@publisher.Id">@publisher.Name</option>
+                        }
+                    </select>
                     <span asp-validation-for="PublisherId" class="field-validation"></span>
                 </div>
 

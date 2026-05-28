@@ -28,6 +28,12 @@ app.MapAreaControllerRoute(
     defaults: new { controller = "Player" });
 
 app.MapAreaControllerRoute(
+    name: "authors",
+    areaName: "Authors",
+    pattern: "Authors/{action=Index}/{id?}",
+    defaults: new { controller = "Author" });
+
+app.MapAreaControllerRoute(
     name: "games",
     areaName: "Games",
     pattern: "Games/{action=Index}/{id?}",

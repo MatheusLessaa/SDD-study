@@ -580,3 +580,220 @@ Every task must satisfy:
 * Manual UI validation confirms the Games filter displays genre names and filters correctly.
 
 ---
+
+## Task 7.10 - Use Genre Dropdown in Add Game Form
+
+**Acceptance Criteria**
+
+* Add Game form renders the `Genre` field as a dropdown/select.
+* Dropdown options display genre names instead of raw genre IDs.
+* Selecting a genre submits the corresponding `GenreId` internally.
+* Dropdown includes all genres available in the supporting `Genres` table.
+* Dropdown includes an empty/default option such as `Select a genre`.
+* Game creation continues to persist `GenreId` without changing the database schema.
+* Existing validation for required/valid `GenreId` remains enforced.
+* Existing Author dropdown behavior remains unchanged.
+* UI remains aligned with `Documentation/visual-reference`.
+* Tests cover Add Game genre dropdown data and create flow preserving `GenreId`.
+* Project builds successfully.
+* Manual UI validation confirms the Add Game form displays genre names and saves the selected genre correctly.
+
+---
+
+## Task 7.11 - Use Publisher Dropdown in Game Forms
+
+**Acceptance Criteria**
+
+* Game form renders the `Publisher` field as a dropdown/select.
+* Dropdown options display publisher names instead of raw publisher IDs.
+* Selecting a publisher submits the corresponding `PublisherId` internally.
+* Dropdown includes all publishers available in the supporting `Publishers` table.
+* Dropdown includes an empty/default option such as `Select a publisher`.
+* Game creation continues to persist `PublisherId` without changing the database schema.
+* Existing unique rule for `Name + PublisherId` remains preserved.
+* Existing Author and Genre dropdown behavior remains unchanged.
+* UI remains aligned with `Documentation/visual-reference`.
+* Tests cover publisher dropdown data and create flow preserving `PublisherId`.
+* Project builds successfully.
+* Manual UI validation confirms the game form displays publisher names and saves the selected publisher correctly.
+
+---
+
+## Task 7.12 - Align Games Filter Actions and Typography
+
+**Acceptance Criteria**
+
+* Games filter actions are grouped together in the same visual row.
+* The `Include inactive` checkbox, `Search`, `Clear` when visible, and `Add Game` controls are left-aligned below the Genre and Publisher filters.
+* Filter actions no longer spread across the row due to unwanted flexible layout behavior.
+* Checkbox text and action button text use consistent sizing, weight, and alignment.
+* Existing Games filters, pagination, and create navigation remain unchanged.
+* UI remains aligned with `Documentation/visual-reference`.
+* Project builds successfully.
+* Manual UI validation confirms the Games filter action row stays aligned on desktop and remains usable on smaller screens.
+
+---
+
+## Task 7.13 - Stabilize Games Filter Action Row When Clear Button Is Visible
+
+**Acceptance Criteria**
+
+* Games filter action row remains visually aligned when `Clear` is visible.
+* `Search`, `Clear`, and `Add Game` controls stay grouped with consistent spacing.
+* The action row does not stretch, jump, or create awkward gaps when `Clear` appears or disappears.
+* `Include inactive` remains aligned with the same action group.
+* Button height, icon alignment, font size, and font weight remain consistent.
+* The layout remains usable on smaller screens, wrapping as one coherent action group if needed.
+* Existing filters, clear behavior, pagination, and Add Game navigation remain unchanged.
+* UI remains aligned with `Documentation/visual-reference`.
+* Project builds successfully.
+* Manual UI validation confirms both hidden and visible `Clear` states.
+
+---
+
+## Task 7.14 - Use Publisher Dropdown Filter in Games List
+
+**Acceptance Criteria**
+
+* Games list Publisher filter is rendered as a dropdown/select.
+* Dropdown options display publisher names instead of publisher IDs.
+* Selecting a publisher submits/uses the corresponding `PublisherId` internally.
+* Dropdown includes all publishers available in the supporting `Publishers` table.
+* Dropdown includes an empty/default option to show all publishers.
+* Publisher filter works together with existing filters.
+* Existing pagination remains unchanged.
+* Games table continues to display publisher names.
+* Existing Game form publisher dropdown behavior remains unchanged.
+* UI remains aligned with `Documentation/visual-reference`.
+* Tests cover publisher dropdown data and filtering by selected publisher.
+* Project builds successfully.
+* Manual UI validation confirms the Games filter displays publisher names and filters correctly.
+
+---
+
+## Task 7.15 - Use Partial Game Name Filter in Matches List
+
+**Acceptance Criteria**
+
+* Matches list filter UI displays a `Game Name` filter instead of `Game Id`.
+* The `Game Name` filter accepts partial text input.
+* Filtering by game name returns matches whose related game title contains the entered text.
+* Matching uses database-side partial matching behavior equivalent to `LIKE '%value%'`.
+* Filtering is case-insensitive when supported by the configured SQL Server collation.
+* Existing Match ID filter remains unchanged.
+* Existing pagination remains unchanged.
+* Existing Matches table display remains unchanged.
+* Existing match creation and score editing behavior remains unchanged.
+* Clear action resets the Game Name filter.
+* Pagination links preserve the Game Name filter value.
+* Tests cover partial game name filtering by a middle or ending part of the title.
+* Project builds successfully.
+* Manual UI validation confirms searching by part of a game title returns the expected matches.
+
+---
+
+## Task 7.16 - Remove Scores Column from Matches List
+
+**Acceptance Criteria**
+
+* Matches table no longer displays a `Scores` column header.
+* Matches table rows no longer display score values in a dedicated column.
+* Scores remain stored and available for match score editing.
+* Existing `Edit Scores` action remains unchanged.
+* Existing winner calculation and score update behavior remains unchanged.
+* Existing Matches filters and pagination remain unchanged.
+* Table column alignment remains visually clean after removing the column.
+* Empty-state row colspan is updated to match the new column count.
+* UI remains aligned with `Documentation/visual-reference`.
+* Project builds successfully.
+* Manual UI validation confirms the Matches list renders without the `Scores` column.
+
+---
+
+## Task 7.17 - Display Match Creation Date in Brazilian Date-Only Format
+
+**Acceptance Criteria**
+
+* Matches list `Created` column displays only the date.
+* Date format is Brazilian day/month/year: `dd/MM/yyyy`.
+* The time/hour is not displayed in the Matches list.
+* The underlying `CreatedAt` value remains stored as date/time in the database.
+* Match creation still sets `CreatedAt` from current server time.
+* Editing match scores still does not change `CreatedAt`.
+* Existing Matches filters and pagination remain unchanged.
+* Existing match creation and score editing behavior remains unchanged.
+* Tests cover formatting of a known `CreatedAt` value as `dd/MM/yyyy`.
+* Project builds successfully.
+* Manual UI validation confirms the Matches list shows dates like `14/05/2026`.
+
+---
+
+## Task 7.18 - Add Match Inspect Details Screen
+
+**Acceptance Criteria**
+
+* Matches table displays an inspect/view action button on each row.
+* The inspect/view button uses an eye-style icon or equivalent inspect visual affordance.
+* Clicking the inspect/view button opens a read-only match details screen.
+* The details screen displays the game title.
+* The details screen displays the match code/id.
+* The details screen displays the match creation date.
+* The details screen displays every match player with that player's corresponding score.
+* Player names and scores preserve the positional relationship from `PlayerIds` and `Scores`.
+* The details screen does not allow editing scores, game, players, or winner.
+* The implementation uses the existing Matches repository, service, service interface, and existing Matches controller flow.
+* The controller remains thin and does not contain business/data mapping logic.
+* No database schema change or migration is introduced.
+* UI remains aligned with the existing `Documentation/visual-reference` patterns until a specific future visual reference is provided.
+* Tests cover loading match details and mapping players to their respective scores.
+* Project builds successfully.
+* Manual UI validation confirms the inspect button opens the details screen and displays the expected match information.
+
+---
+
+## Task 7.19 - Open Match Inspect Details in Modal Partial
+
+**Acceptance Criteria**
+
+* Matches table keeps an inspect/view action button on each row.
+* Clicking the inspect/view button opens a modal instead of navigating to a separate details page.
+* The modal displays the same match details content created for Task 7.18.
+* Match details content is extracted into a reusable partial view.
+* The partial view displays game title, match code/id, match creation date, winner, and all players with their respective scores.
+* Player names and scores preserve the positional relationship from `PlayerIds` and `Scores`.
+* The modal is read-only and does not allow editing scores, game, players, or winner.
+* The modal can be closed without losing the current Matches list filters or pagination state.
+* The implementation continues to use the existing Matches repository, service, service interface, and existing Matches controller flow.
+* The controller remains thin and does not contain business/data mapping logic.
+* No database schema change or migration is introduced.
+* UI remains aligned with the existing `Documentation/visual-reference` modal patterns.
+* Tests cover the partial/modal details action returning the expected match data.
+* Project builds successfully.
+* Manual UI validation confirms the inspect button opens and closes the modal and displays the expected match information.
+
+---
+
+## Task 7.20 - Add Authors Area with CRUD Flow
+
+**Acceptance Criteria**
+
+* Authors appears as a new item in the left sidebar navigation.
+* Authors list page displays existing authors.
+* Authors list supports pagination using the project default page size.
+* Authors list supports filtering by partial author name.
+* Create Author flow works and persists a new author.
+* Edit Author flow works and updates the author name.
+* Details/View flow displays author data in read-only mode.
+* Delete flow removes authors only when they are not referenced by games.
+* Delete flow rejects authors already used by games with a clear validation message.
+* Author names are required.
+* Author names are unique.
+* Implementation uses repository, service, service interface, controller, view models, and views.
+* Controllers remain thin and do not contain business/data mapping logic.
+* Existing Game author dropdown behavior remains unchanged.
+* UI remains aligned with `Documentation/visual-reference`.
+* Tests cover repository behavior, service validation, controller flow, and delete rejection for authors used by games.
+* Project builds successfully.
+* Manual UI validation confirms Authors navigation and CRUD screens render correctly.
+
+---

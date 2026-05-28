@@ -35,6 +35,10 @@
                     <span class="material-symbols-outlined" aria-hidden="true">groups</span>
                     <span>Players</span>
                 </a>
+                <a class="sidebar-link @(activeNav == "Authors" ? "active" : null)" asp-area="Authors" asp-controller="Author" asp-action="Index">
+                    <span class="material-symbols-outlined" aria-hidden="true">person_edit</span>
+                    <span>Authors</span>
+                </a>
                 <a class="sidebar-link @(activeNav == "Matches" ? "active" : null)" asp-area="Matches" asp-controller="Match" asp-action="Index">
                     <span class="material-symbols-outlined" aria-hidden="true">history</span>
                     <span>Matches</span>

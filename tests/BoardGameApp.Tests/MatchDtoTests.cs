@@ -73,5 +73,6 @@ public class MatchDtoTests
         Assert.Equal("11,9", dto.Scores);
         Assert.Equal(7, dto.WinnerPlayerId);
         Assert.Equal(new DateTime(2026, 5, 12, 18, 30, 0), dto.CreatedAt);
+        Assert.Equal("12/05/2026", dto.CreatedDateDisplay);
     }
 }

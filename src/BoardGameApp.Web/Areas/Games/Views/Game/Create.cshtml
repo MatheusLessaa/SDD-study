@@ -1,4 +1,4 @@
-@model CreateGameDto
+@model GameCreateViewModel
 
 <section class="form-shell">
     <div class="form-card">
@@ -30,14 +30,26 @@
 
             <div class="form-grid two-columns">
                 <div class="form-field">
-                    <label asp-for="PublisherId">Publisher Id</label>
-                    <input asp-for="PublisherId" type="number" min="1" />
+                    <label asp-for="PublisherId">Publisher</label>
+                    <select asp-for="PublisherId">
+                        <option value="">Select a publisher</option>
+                        @foreach (var publisher in Model.PublisherOptions)
+                        {
+                            <option value="@publisher.Id">@publisher.Name</option>
+                        }
+                    </select>
                     <span asp-validation-for="PublisherId" class="field-validation"></span>
                 </div>
 
                 <div class="form-field">
-                    <label asp-for="GenreId">Genre Id</label>
-                    <input asp-for="GenreId" type="number" min="1" />
+                    <label asp-for="GenreId">Genre</label>
+                    <select asp-for="GenreId">
+                        <option value="">Select a genre</option>
+                        @foreach (var genre in Model.GenreOptions)
+                        {
+                            <option value="@genre.Id">@genre.Name</option>
+                        }
+                    </select>
                     <span asp-validation-for="GenreId" class="field-validation"></span>
                 </div>
             </div>

@@ -33,11 +33,13 @@ public sealed class GameController : Controller
             includeInactive,
             cancellationToken);
         var genreOptions = await gameService.ListGenreOptionsAsync(cancellationToken);
+        var publisherOptions = await gameService.ListPublisherOptionsAsync(cancellationToken);
 
         return View(new GameIndexViewModel
         {
             Games = games,
             GenreOptions = genreOptions,
+            PublisherOptions = publisherOptions,
             Id = id,
             Name = name,
             Author = author,
@@ -48,34 +50,34 @@ public sealed class GameController : Controller
     }
 
     [HttpGet]
-    public IActionResult Create()
+    public async Task<IActionResult> Create(CancellationToken cancellationToken = default)
     {
         SetGamesNavigation("Create Game");
 
-        return View(new CreateGameDto(string.Empty, 0, 0, 0, 1));
+        return View(await BuildCreateViewModelAsync(cancellationToken: cancellationToken));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        CreateGameDto dto,
+        GameCreateViewModel model,
         CancellationToken cancellationToken = default)
     {
         SetGamesNavigation("Create Game");
 
         if (!ModelState.IsValid)
         {
-            return View(dto);
+            return View(await BuildCreateViewModelAsync(model, cancellationToken));
         }
 
         try
         {
-            await gameService.CreateAsync(dto, cancellationToken);
+            await gameService.CreateAsync(model.ToDto(), cancellationToken);
         }
         catch (InvalidOperationException exception)
         {
             ModelState.AddModelError(string.Empty, exception.Message);
-            return View(dto);
+            return View(await BuildCreateViewModelAsync(model, cancellationToken));
         }
 
         return RedirectToAction(nameof(Index));
@@ -95,38 +97,42 @@ public sealed class GameController : Controller
             return NotFound();
         }
 
-        return View(new UpdateGameDto(
-            game.Id,
-            game.Name,
-            game.PublisherId,
-            game.GenreId,
-            game.AuthorId,
-            game.TimesPlayed,
-            game.MaxPlayers,
-            game.IsActive));
+        return View(await BuildEditViewModelAsync(
+            new GameEditViewModel
+            {
+                Id = game.Id,
+                Name = game.Name,
+                PublisherId = game.PublisherId,
+                GenreId = game.GenreId,
+                AuthorId = game.AuthorId,
+                TimesPlayed = game.TimesPlayed,
+                MaxPlayers = game.MaxPlayers,
+                IsActive = game.IsActive
+            },
+            cancellationToken));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
-        UpdateGameDto dto,
+        GameEditViewModel model,
         CancellationToken cancellationToken = default)
     {
         SetGamesNavigation("Edit Game");
 
         if (!ModelState.IsValid)
         {
-            return View(dto);
+            return View(await BuildEditViewModelAsync(model, cancellationToken));
         }
 
         try
         {
-            await gameService.UpdateAsync(dto, cancellationToken);
+            await gameService.UpdateAsync(model.ToDto(), cancellationToken);
         }
         catch (InvalidOperationException exception)
         {
             ModelState.AddModelError(string.Empty, exception.Message);
-            return View(dto);
+            return View(await BuildEditViewModelAsync(model, cancellationToken));
         }
 
         return RedirectToAction(nameof(Index));
@@ -172,5 +178,44 @@ public sealed class GameController : Controller
     {
         ViewData["Title"] = title;
         ViewData["ActiveNav"] = "Games";
+    }
+
+    private async Task<GameCreateViewModel> BuildCreateViewModelAsync(
+        GameCreateViewModel? model = null,
+        CancellationToken cancellationToken = default)
+    {
+        var genreOptions = await gameService.ListGenreOptionsAsync(cancellationToken);
+        var publisherOptions = await gameService.ListPublisherOptionsAsync(cancellationToken);
+
+        return new GameCreateViewModel
+        {
+            Name = model?.Name ?? string.Empty,
+            PublisherId = model?.PublisherId ?? 0,
+            GenreId = model?.GenreId ?? 0,
+            AuthorId = model?.AuthorId ?? 0,
+            MaxPlayers = model?.MaxPlayers ?? 1,
+            GenreOptions = genreOptions,
+            PublisherOptions = publisherOptions
+        };
+    }
+
+    private async Task<GameEditViewModel> BuildEditViewModelAsync(
+        GameEditViewModel model,
+        CancellationToken cancellationToken = default)
+    {
+        var publisherOptions = await gameService.ListPublisherOptionsAsync(cancellationToken);
+
+        return new GameEditViewModel
+        {
+            Id = model.Id,
+            Name = model.Name,
+            PublisherId = model.PublisherId,
+            GenreId = model.GenreId,
+            AuthorId = model.AuthorId,
+            TimesPlayed = model.TimesPlayed,
+            MaxPlayers = model.MaxPlayers,
+            IsActive = model.IsActive,
+            PublisherOptions = publisherOptions
+        };
     }
 }

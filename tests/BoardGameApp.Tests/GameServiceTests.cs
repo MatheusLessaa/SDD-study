@@ -180,6 +180,32 @@ public class GameServiceTests
             });
     }
 
+    [Fact]
+    public async Task List_publisher_options_returns_publishers_for_form_dropdown()
+    {
+        var service = new GameService(new FakeGameRepository());
+
+        var result = await service.ListPublisherOptionsAsync();
+
+        Assert.Collection(
+            result,
+            publisher =>
+            {
+                Assert.Equal(1, publisher.Id);
+                Assert.Equal("Galapagos", publisher.Name);
+            },
+            publisher =>
+            {
+                Assert.Equal(2, publisher.Id);
+                Assert.Equal("Devir", publisher.Name);
+            },
+            publisher =>
+            {
+                Assert.Equal(3, publisher.Id);
+                Assert.Equal("Meeple BR", publisher.Name);
+            });
+    }
+
     private static Game CreateGame(string name, int publisherId, bool isActive = true)
     {
         return new Game
@@ -253,6 +279,19 @@ public class GameServiceTests
                 new GenreOptionDto(1, "Strategy"),
                 new GenreOptionDto(2, "Family"),
                 new GenreOptionDto(3, "Party")
+            ];
+
+            return Task.FromResult(options);
+        }
+
+        public Task<IReadOnlyList<PublisherOptionDto>> ListPublisherOptionsAsync(
+            CancellationToken cancellationToken = default)
+        {
+            IReadOnlyList<PublisherOptionDto> options =
+            [
+                new PublisherOptionDto(1, "Galapagos"),
+                new PublisherOptionDto(2, "Devir"),
+                new PublisherOptionDto(3, "Meeple BR")
             ];
 
             return Task.FromResult(options);

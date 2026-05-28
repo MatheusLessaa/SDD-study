@@ -43,9 +43,59 @@ public class GameControllerTests
                 Assert.Equal(2, genre.Id);
                 Assert.Equal("Family", genre.Name);
             });
+        Assert.Collection(
+            model.PublisherOptions,
+            publisher =>
+            {
+                Assert.Equal(1, publisher.Id);
+                Assert.Equal("Galapagos", publisher.Name);
+            },
+            publisher =>
+            {
+                Assert.Equal(2, publisher.Id);
+                Assert.Equal("Devir", publisher.Name);
+            });
         Assert.Equal(new GameFilter(7, "Azul", "Michael", 2, 3), service.LastFilter);
         Assert.Equal(2, service.LastPage);
         Assert.True(service.LastIncludeInactive);
+        Assert.Equal("Games", controller.ViewData["ActiveNav"]);
+    }
+
+    [Fact]
+    public async Task Create_get_returns_supporting_options_for_dropdowns()
+    {
+        var service = new FakeGameService();
+        var controller = new GameController(service);
+
+        var result = await controller.Create();
+
+        var viewResult = Assert.IsType<ViewResult>(result);
+        var model = Assert.IsType<GameCreateViewModel>(viewResult.Model);
+        Assert.Equal(1, model.MaxPlayers);
+        Assert.Collection(
+            model.GenreOptions,
+            genre =>
+            {
+                Assert.Equal(1, genre.Id);
+                Assert.Equal("Strategy", genre.Name);
+            },
+            genre =>
+            {
+                Assert.Equal(2, genre.Id);
+                Assert.Equal("Family", genre.Name);
+            });
+        Assert.Collection(
+            model.PublisherOptions,
+            publisher =>
+            {
+                Assert.Equal(1, publisher.Id);
+                Assert.Equal("Galapagos", publisher.Name);
+            },
+            publisher =>
+            {
+                Assert.Equal(2, publisher.Id);
+                Assert.Equal("Devir", publisher.Name);
+            });
         Assert.Equal("Games", controller.ViewData["ActiveNav"]);
     }
 
@@ -54,13 +104,22 @@ public class GameControllerTests
     {
         var service = new FakeGameService();
         var controller = new GameController(service);
-        var dto = new CreateGameDto("Azul", 1, 2, 1, 4);
+        var model = new GameCreateViewModel
+        {
+            Name = "Azul",
+            PublisherId = 1,
+            GenreId = 2,
+            AuthorId = 1,
+            MaxPlayers = 4
+        };
 
-        var result = await controller.Create(dto);
+        var result = await controller.Create(model);
 
         var redirect = Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal(nameof(GameController.Index), redirect.ActionName);
-        Assert.Equal(dto, service.CreatedGame);
+        Assert.Equal(model.ToDto(), service.CreatedGame);
+        Assert.Equal(1, service.CreatedGame?.PublisherId);
+        Assert.Equal(2, service.CreatedGame?.GenreId);
     }
 
     [Fact]
@@ -75,17 +134,54 @@ public class GameControllerTests
     }
 
     [Fact]
+    public async Task Edit_get_returns_publisher_options_for_dropdown()
+    {
+        var service = new FakeGameService();
+        var controller = new GameController(service);
+
+        var result = await controller.Edit(1);
+
+        var viewResult = Assert.IsType<ViewResult>(result);
+        var model = Assert.IsType<GameEditViewModel>(viewResult.Model);
+        Assert.Equal(1, model.Id);
+        Assert.Equal(1, model.PublisherId);
+        Assert.Collection(
+            model.PublisherOptions,
+            publisher =>
+            {
+                Assert.Equal(1, publisher.Id);
+                Assert.Equal("Galapagos", publisher.Name);
+            },
+            publisher =>
+            {
+                Assert.Equal(2, publisher.Id);
+                Assert.Equal("Devir", publisher.Name);
+            });
+    }
+
+    [Fact]
     public async Task Edit_post_redirects_to_index_when_game_is_updated()
     {
         var service = new FakeGameService();
         var controller = new GameController(service);
-        var dto = new UpdateGameDto(1, "Azul", 1, 2, 1, 3, 4, true);
+        var model = new GameEditViewModel
+        {
+            Id = 1,
+            Name = "Azul",
+            PublisherId = 1,
+            GenreId = 2,
+            AuthorId = 1,
+            TimesPlayed = 3,
+            MaxPlayers = 4,
+            IsActive = true
+        };
 
-        var result = await controller.Edit(dto);
+        var result = await controller.Edit(model);
 
         var redirect = Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal(nameof(GameController.Index), redirect.ActionName);
-        Assert.Equal(dto, service.UpdatedGame);
+        Assert.Equal(model.ToDto(), service.UpdatedGame);
+        Assert.Equal(1, service.UpdatedGame?.PublisherId);
     }
 
     [Fact]
@@ -220,6 +316,18 @@ public class GameControllerTests
             [
                 new GenreOptionDto(1, "Strategy"),
                 new GenreOptionDto(2, "Family")
+            ];
+
+            return Task.FromResult(options);
+        }
+
+        public Task<IReadOnlyList<PublisherOptionDto>> ListPublisherOptionsAsync(
+            CancellationToken cancellationToken = default)
+        {
+            IReadOnlyList<PublisherOptionDto> options =
+            [
+                new PublisherOptionDto(1, "Galapagos"),
+                new PublisherOptionDto(2, "Devir")
             ];
 
             return Task.FromResult(options);

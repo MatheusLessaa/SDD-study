@@ -24,6 +24,9 @@ public interface IGameRepository
     Task<IReadOnlyList<GenreOptionDto>> ListGenreOptionsAsync(
         CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<PublisherOptionDto>> ListPublisherOptionsAsync(
+        CancellationToken cancellationToken = default);
+
     Task<PagedResult<Game>> ListAsync(
         GameFilter filter,
         int page = 1,

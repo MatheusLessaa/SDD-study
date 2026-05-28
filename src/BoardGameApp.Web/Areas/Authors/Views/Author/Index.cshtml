@@ -1,0 +1,155 @@
+@model AuthorIndexViewModel
+
+@{
+    var hasFilters = !string.IsNullOrWhiteSpace(Model.Name);
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <section class="surface-panel status-message" role="alert">
+        <p>@Model.StatusMessage</p>
+    </section>
+}
+
+<section class="filters-panel" aria-label="Author filters">
+    <form asp-action="Index" method="get" class="filters-grid authors-filters-grid">
+        <div class="form-field">
+            <label for="name">Search by Name</label>
+            <div class="input-with-icon">
+                <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                <input id="name" name="name" value="@Model.Name" placeholder="Enter author name..." />
+            </div>
+        </div>
+
+        <div class="filter-actions">
+            <button class="primary-button" type="submit">
+                <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                <span>Search</span>
+            </button>
+            @if (hasFilters)
+            {
+                <a class="secondary-button" asp-action="Index">
+                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                    <span>Clear</span>
+                </a>
+            }
+            <a class="primary-button" asp-action="Create">
+                <span class="material-symbols-outlined" aria-hidden="true">person_add</span>
+                <span>Add Author</span>
+            </a>
+        </div>
+    </form>
+</section>
+
+<section class="data-card" aria-label="Authors list">
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th class="actions-column">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Authors.Items.Count == 0)
+                {
+                    <tr>
+                        <td colspan="2">
+                            <div class="empty-state">
+                                <span class="material-symbols-outlined" aria-hidden="true">person_off</span>
+                                <p>No authors found.</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var author in Model.Authors.Items)
+                    {
+                        <tr>
+                            <td>
+                                <div class="identity-cell">
+                                    <span class="avatar-token">@GetInitials(author.Name)</span>
+                                    <div>
+                                        <p>@author.Name</p>
+                                        <small>Author #@author.Id</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="row-actions">
+                                    <a class="table-action" asp-action="Details" asp-route-id="@author.Id">
+                                        <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+                                        <span>View</span>
+                                    </a>
+                                    <a class="table-action" asp-action="Edit" asp-route-id="@author.Id">
+                                        <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                                        <span>Edit</span>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@author.Id" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <button class="table-action danger" type="submit">
+                                            <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+                                            <span>Delete</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="table-footer">
+        <p>
+            Showing <strong>@Model.FirstItemNumber</strong>-<strong>@Model.LastItemNumber</strong>
+            of <strong>@Model.Authors.TotalCount</strong> authors
+        </p>
+        <div class="pagination-actions">
+            @if (Model.HasPreviousPage)
+            {
+                <a class="icon-page-link" aria-label="Previous page" asp-action="Index" asp-route-page="@Model.PreviousPage" asp-route-name="@Model.Name">
+                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                </a>
+            }
+            else
+            {
+                <span class="icon-page-link disabled" aria-hidden="true">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </span>
+            }
+
+            @if (Model.HasNextPage)
+            {
+                <a class="icon-page-link" aria-label="Next page" asp-action="Index" asp-route-page="@Model.NextPage" asp-route-name="@Model.Name">
+                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                </a>
+            }
+            else
+            {
+                <span class="icon-page-link disabled" aria-hidden="true">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </span>
+            }
+        </div>
+    </footer>
+</section>
+
+@functions {
+    private static string GetInitials(string name)
+    {
+        var parts = name
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Take(2)
+            .ToArray();
+
+        if (parts.Length == 0)
+        {
+            return "?";
+        }
+
+        return string.Concat(parts.Select(part => char.ToUpperInvariant(part[0])));
+    }
+}

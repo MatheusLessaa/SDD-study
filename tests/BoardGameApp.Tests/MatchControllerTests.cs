@@ -16,13 +16,13 @@ public class MatchControllerTests
         var service = new FakeMatchService();
         var controller = CreateController(service);
 
-        var result = await controller.Index(id: 7, gameId: 3, page: 2);
+        var result = await controller.Index(id: 7, gameName: "forming", page: 2);
 
         var viewResult = Assert.IsType<ViewResult>(result);
         var model = Assert.IsType<MatchIndexViewModel>(viewResult.Model);
         Assert.Equal(7, model.Id);
-        Assert.Equal(3, model.GameId);
-        Assert.Equal(new MatchFilter(7, 3), service.LastFilter);
+        Assert.Equal("forming", model.GameName);
+        Assert.Equal(new MatchFilter(7, "forming"), service.LastFilter);
         Assert.Equal(2, service.LastPage);
         Assert.Equal("Matches", controller.ViewData["ActiveNav"]);
     }
@@ -58,6 +58,46 @@ public class MatchControllerTests
         var model = Assert.IsType<MatchCreateViewModel>(viewResult.Model);
         Assert.Single(model.Games);
         Assert.Equal(2, model.Players.Count);
+    }
+
+    [Fact]
+    public async Task Details_get_returns_match_details_partial()
+    {
+        var service = new FakeMatchService();
+        var controller = CreateController(service);
+
+        var result = await controller.Details(5);
+
+        var viewResult = Assert.IsType<PartialViewResult>(result);
+        var model = Assert.IsType<MatchViewDto>(viewResult.Model);
+        Assert.Equal("_Details", viewResult.ViewName);
+        Assert.Equal(5, model.Id);
+        Assert.Equal("Azul", model.GameName);
+        Assert.Equal("12/05/2026", model.CreatedDateDisplay);
+        Assert.Collection(
+            model.PlayerScoreDetails,
+            playerScore =>
+            {
+                Assert.Equal("Ada Lovelace", playerScore.PlayerName);
+                Assert.Equal(5, playerScore.Score);
+            },
+            playerScore =>
+            {
+                Assert.Equal("Grace Hopper", playerScore.PlayerName);
+                Assert.Equal(8, playerScore.Score);
+            });
+        Assert.Equal("Matches", controller.ViewData["ActiveNav"]);
+    }
+
+    [Fact]
+    public async Task Details_get_returns_not_found_when_match_does_not_exist()
+    {
+        var service = new FakeMatchService { MatchToReturn = null };
+        var controller = CreateController(service);
+
+        var result = await controller.Details(99);
+
+        Assert.IsType<NotFoundResult>(result);
     }
 
     [Fact]
@@ -122,7 +162,14 @@ public class MatchControllerTests
             "1,2",
             "5,8",
             2,
-            new DateTime(2026, 5, 12, 18, 30, 0));
+            new DateTime(2026, 5, 12, 18, 30, 0),
+            "Azul",
+            "Ada Lovelace, Grace Hopper",
+            "Grace Hopper",
+            [
+                new MatchPlayerScoreDto(1, "Ada Lovelace", 5),
+                new MatchPlayerScoreDto(2, "Grace Hopper", 8)
+            ]);
 
         public Task<MatchViewDto> CreateAsync(
             CreateMatchDto dto,
@@ -227,6 +274,12 @@ public class MatchControllerTests
             CancellationToken cancellationToken = default)
         {
             return Task.FromResult<IReadOnlyList<GenreOptionDto>>([]);
+        }
+
+        public Task<IReadOnlyList<PublisherOptionDto>> ListPublisherOptionsAsync(
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<IReadOnlyList<PublisherOptionDto>>([]);
         }
     }
 

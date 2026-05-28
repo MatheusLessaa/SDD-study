@@ -75,7 +75,7 @@ public sealed class MatchService : IMatchService
     {
         var match = await matchRepository.GetByIdAsync(id, cancellationToken);
 
-        return match is null ? null : MatchViewDto.FromEntity(match);
+        return match is null ? null : await EnrichForDisplayAsync(match, cancellationToken);
     }
 
     public async Task<PagedResult<MatchViewDto>> ListAsync(
@@ -88,7 +88,7 @@ public sealed class MatchService : IMatchService
 
         foreach (var match in matches.Items)
         {
-            items.Add(await EnrichForListAsync(match, cancellationToken));
+            items.Add(await EnrichForDisplayAsync(match, cancellationToken));
         }
 
         return new PagedResult<MatchViewDto>(
@@ -98,21 +98,25 @@ public sealed class MatchService : IMatchService
             matches.TotalCount);
     }
 
-    private async Task<MatchViewDto> EnrichForListAsync(
+    private async Task<MatchViewDto> EnrichForDisplayAsync(
         Match match,
         CancellationToken cancellationToken)
     {
         var game = await gameRepository.GetByIdAsync(match.GameId, cancellationToken);
         var playerIds = ParsePlayerIds(match.PlayerIds);
+        var scores = ParseScores(match.Scores, playerIds.Count);
         var playerNames = new List<string>();
+        var playerScores = new List<MatchPlayerScoreDto>();
         var winnerPlayerName = string.Empty;
 
-        foreach (var playerId in playerIds)
+        for (var index = 0; index < playerIds.Count; index++)
         {
+            var playerId = playerIds[index];
             var player = await playerRepository.GetByIdAsync(playerId, cancellationToken);
             var playerName = player?.FullName ?? $"Player #{playerId}";
 
             playerNames.Add(playerName);
+            playerScores.Add(new MatchPlayerScoreDto(playerId, playerName, scores[index]));
 
             if (playerId == match.WinnerPlayerId)
             {
@@ -130,7 +134,8 @@ public sealed class MatchService : IMatchService
         {
             GameName = game?.Name ?? $"Game #{match.GameId}",
             PlayerNames = string.Join(", ", playerNames),
-            WinnerPlayerName = winnerPlayerName
+            WinnerPlayerName = winnerPlayerName,
+            PlayerScores = playerScores
         };
     }
 

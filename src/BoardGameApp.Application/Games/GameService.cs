@@ -75,6 +75,12 @@ public sealed class GameService : IGameService
         return gameRepository.ListGenreOptionsAsync(cancellationToken);
     }
 
+    public Task<IReadOnlyList<PublisherOptionDto>> ListPublisherOptionsAsync(
+        CancellationToken cancellationToken = default)
+    {
+        return gameRepository.ListPublisherOptionsAsync(cancellationToken);
+    }
+
     public async Task<PagedResult<GameViewDto>> ListAsync(
         GameFilter filter,
         int page = 1,

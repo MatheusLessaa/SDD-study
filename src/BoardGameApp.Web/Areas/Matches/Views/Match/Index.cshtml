@@ -1,7 +1,7 @@
 @model MatchIndexViewModel
 
 @{
-    var hasFilters = Model.Id.HasValue || Model.GameId.HasValue;
+    var hasFilters = Model.Id.HasValue || !string.IsNullOrWhiteSpace(Model.GameName);
 }
 
 <section class="filters-panel" aria-label="Match filters">
@@ -12,10 +12,10 @@
         </div>
 
         <div class="form-field">
-            <label for="gameId">Game Id</label>
+            <label for="gameName">Game Name</label>
             <div class="input-with-icon">
                 <span class="material-symbols-outlined" aria-hidden="true">casino</span>
-                <input id="gameId" name="gameId" type="number" min="1" value="@Model.GameId" placeholder="Game" />
+                <input id="gameName" name="gameName" value="@Model.GameName" placeholder="Enter game name..." />
             </div>
         </div>
 
@@ -46,7 +46,6 @@
                 <tr>
                     <th>Match</th>
                     <th>Players</th>
-                    <th>Scores</th>
                     <th>Winner</th>
                     <th>Created</th>
                     <th class="actions-column">Actions</th>
@@ -56,7 +55,7 @@
                 @if (Model.Matches.Items.Count == 0)
                 {
                     <tr>
-                        <td colspan="6">
+                        <td colspan="5">
                             <div class="empty-state">
                                 <span class="material-symbols-outlined" aria-hidden="true">history</span>
                                 <p>No matches found.</p>
@@ -79,13 +78,16 @@
                                 </div>
                             </td>
                             <td>@match.PlayerNames</td>
-                            <td>@match.Scores</td>
                             <td>
                                 <span class="status-pill active">@match.WinnerPlayerName</span>
                             </td>
-                            <td>@match.CreatedAt.ToString("g")</td>
+                            <td>@match.CreatedDateDisplay</td>
                             <td>
                                 <div class="row-actions">
+                                    <button class="table-action match-inspect-button" type="button" data-details-url="@Url.Action("Details", new { id = match.Id })" aria-label="Inspect match #@match.Id">
+                                        <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+                                        <span>Inspect</span>
+                                    </button>
                                     <a class="table-action" asp-action="Edit" asp-route-id="@match.Id">
                                         <span class="material-symbols-outlined" aria-hidden="true">edit</span>
                                         <span>Edit Scores</span>
@@ -107,7 +109,7 @@
         <div class="pagination-actions">
             @if (Model.HasPreviousPage)
             {
-                <a class="icon-page-link" aria-label="Previous page" asp-action="Index" asp-route-page="@Model.PreviousPage" asp-route-id="@Model.Id" asp-route-gameId="@Model.GameId">
+                <a class="icon-page-link" aria-label="Previous page" asp-action="Index" asp-route-page="@Model.PreviousPage" asp-route-id="@Model.Id" asp-route-gameName="@Model.GameName">
                     <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
                 </a>
             }
@@ -120,7 +122,7 @@
 
             @if (Model.HasNextPage)
             {
-                <a class="icon-page-link" aria-label="Next page" asp-action="Index" asp-route-page="@Model.NextPage" asp-route-id="@Model.Id" asp-route-gameId="@Model.GameId">
+                <a class="icon-page-link" aria-label="Next page" asp-action="Index" asp-route-page="@Model.NextPage" asp-route-id="@Model.Id" asp-route-gameName="@Model.GameName">
                     <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
                 </a>
             }
@@ -133,3 +135,80 @@
         </div>
     </footer>
 </section>
+
+<div class="modal-backdrop" id="matchDetailsModal" hidden>
+    <section class="modal-card match-details-modal" role="dialog" aria-modal="true" aria-labelledby="matchDetailsTitle">
+        <header class="modal-header">
+            <h2 id="matchDetailsTitle">Match Details</h2>
+            <button class="icon-button" type="button" id="closeMatchDetailsModalButton" aria-label="Close match details">
+                <span class="material-symbols-outlined" aria-hidden="true">close</span>
+            </button>
+        </header>
+
+        <div class="match-details-modal-body" id="matchDetailsModalBody" aria-live="polite"></div>
+
+        <footer class="modal-footer">
+            <button class="secondary-button" type="button" id="cancelMatchDetailsModalButton">Close</button>
+        </footer>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        (() => {
+            const modal = document.getElementById("matchDetailsModal");
+            const modalBody = document.getElementById("matchDetailsModalBody");
+            const closeButton = document.getElementById("closeMatchDetailsModalButton");
+            const cancelButton = document.getElementById("cancelMatchDetailsModalButton");
+            const inspectButtons = Array.from(document.querySelectorAll(".match-inspect-button"));
+
+            function openModal() {
+                modal.hidden = false;
+                closeButton.focus();
+            }
+
+            function closeModal() {
+                modal.hidden = true;
+                modalBody.innerHTML = "";
+            }
+
+            async function loadDetails(url) {
+                modalBody.innerHTML = "<div class=\"modal-loading\">Loading match details...</div>";
+                openModal();
+
+                try {
+                    const response = await fetch(url, {
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Unable to load match details.");
+                    }
+
+                    modalBody.innerHTML = await response.text();
+                } catch {
+                    modalBody.innerHTML = "<div class=\"modal-loading error\">Unable to load match details.</div>";
+                }
+            }
+
+            inspectButtons.forEach(button => {
+                button.addEventListener("click", () => loadDetails(button.dataset.detailsUrl));
+            });
+
+            closeButton.addEventListener("click", closeModal);
+            cancelButton.addEventListener("click", closeModal);
+            modal.addEventListener("click", event => {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+            document.addEventListener("keydown", event => {
+                if (event.key === "Escape" && !modal.hidden) {
+                    closeModal();
+                }
+            });
+        })();
+    </script>
+}

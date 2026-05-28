@@ -111,8 +111,11 @@ Each context is **isolated and self-contained**.
 ### 5.2 Business Rules
 
 * Name + PublisherId must be unique
+* Publisher must be selected from the Publishers supporting table.
+* Game forms must display publisher names in a dropdown and submit the selected PublisherId.
 * Author must be selected from the Authors supporting table.
 * Add Game must display author names in a dropdown and submit the selected AuthorId.
+* Add Game must display genre names in a dropdown and submit the selected GenreId.
 * TimesPlayed must increment by 1 whenever a new match is successfully created for the game.
 * Games cannot be deleted
 * Deletion = set `IsActive = false`
@@ -130,10 +133,12 @@ Each context is **isolated and self-contained**.
 * Filters:
 
   * Name (partial)
-  * Publisher
+  * Publisher, selected from a dropdown displaying publisher names and submitting the corresponding PublisherId
   * Author (partial)
   * Genre, selected from a dropdown displaying genre names and submitting the corresponding GenreId
   * Id
+* Games filter actions must be grouped, left-aligned, and visually consistent below the Genre and Publisher filters.
+* The Games filter action layout must remain stable whether the optional `Clear` button is hidden or visible.
 * Sorting:
 
   * Default: Name ASC
@@ -219,13 +224,13 @@ Each context is **isolated and self-contained**.
 * List matches (max 20 per page)
 * The matches list must display the game name as the primary title in the Match column, instead of generic labels such as `Match #1`.
 * The matches list must display player full names instead of raw player IDs.
+* The matches list must not display scores as a dedicated table column.
 * Raw match, game, and player IDs may be shown only as secondary metadata when useful, not as the main display value.
 
 * Filters:
 
   * Match Id
-  * Game Id
-  * Game Name (via join)
+  * Game Name, using partial matching against the related game title
   * Player Name [FUTURE]
 
 * Sorting:
@@ -235,10 +240,16 @@ Each context is **isolated and self-contained**.
 * Actions:
 
   * Create
+  * Inspect/View match details
   * Edit (scores only)
   * Delete [NEED CLARIFICATION: hard delete vs soft delete]
 
-* The match list must display the match creation date/time.
+* The match list must display the match creation date in Brazilian `dd/MM/yyyy` format without the time.
+* The matches list must provide a read-only inspect/view action for each match.
+* The match inspect/view action must open a modal on the Matches list.
+* The match inspect/view modal content must be rendered from a partial view.
+* The match inspect/view modal must display the related game title, match code/id, match creation date, and all players with their respective scores.
+* Match inspect/view must use the existing Matches backend flow through repository, service, service interface, and the existing Matches controller.
 
 ---
 
@@ -304,7 +315,12 @@ Each context is **isolated and self-contained**.
 ### 7.4 Rules
 
 * Initially static (seeded data)
-* Not editable via UI in v1
+* Authors are editable via UI.
+* Authors support list, create, edit, view/details, and delete flows.
+* Author names are required.
+* Author names must be unique.
+* Authors linked to existing games cannot be deleted.
+* Authors not linked to games may be deleted.
 * [FUTURE] Will support CRUD operations
 
 ---

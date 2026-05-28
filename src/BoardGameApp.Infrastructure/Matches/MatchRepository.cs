@@ -48,9 +48,13 @@ public sealed class MatchRepository : IMatchRepository
             query = query.Where(match => match.Id == filter.Id.Value);
         }
 
-        if (filter.GameId.HasValue)
+        if (!string.IsNullOrWhiteSpace(filter.GameName))
         {
-            query = query.Where(match => match.GameId == filter.GameId.Value);
+            query =
+                from match in query
+                join game in dbContext.Games on match.GameId equals game.Id
+                where game.Name.Contains(filter.GameName)
+                select match;
         }
 
         var totalCount = await query.CountAsync(cancellationToken);

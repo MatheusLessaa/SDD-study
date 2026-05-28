@@ -1,0 +1,31 @@
+@model UpdateAuthorDto
+
+<section class="form-shell">
+    <div class="form-card">
+        <header class="form-card-header">
+            <h2>Edit Author</h2>
+            <p>Update author details used by the game catalog.</p>
+        </header>
+
+        <form asp-action="Edit" method="post" class="entity-form">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <input asp-for="Id" type="hidden" />
+
+            <div class="form-field">
+                <label asp-for="Name">Name</label>
+                <input asp-for="Name" autofocus />
+                <span asp-validation-for="Name" class="field-validation"></span>
+            </div>
+
+            <div class="form-actions">
+                <a class="secondary-button" asp-action="Index">Cancel</a>
+                <button class="primary-button" type="submit">
+                    <span class="material-symbols-outlined" aria-hidden="true">save</span>
+                    <span>Save Author</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</section>

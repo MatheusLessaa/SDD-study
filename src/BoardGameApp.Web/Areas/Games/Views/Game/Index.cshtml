@@ -45,31 +45,40 @@
         </div>
 
         <div class="form-field">
-            <label for="publisherId">Publisher Id</label>
-            <input id="publisherId" name="publisherId" type="number" min="1" value="@Model.PublisherId" placeholder="Publisher" />
+            <label for="publisherId">Publisher</label>
+            <select id="publisherId" name="publisherId">
+                <option value="">All publishers</option>
+                @foreach (var publisher in Model.PublisherOptions)
+                {
+                    var isSelected = Model.PublisherId == publisher.Id;
+                    <option value="@publisher.Id" selected="@isSelected">@publisher.Name</option>
+                }
+            </select>
         </div>
 
-        <label class="checkbox-field">
-            <input type="checkbox" name="includeInactive" value="true" checked="@Model.IncludeInactive" />
-            <span>Include inactive</span>
-        </label>
+        <div class="games-filter-actions-row">
+            <label class="checkbox-field">
+                <input type="checkbox" name="includeInactive" value="true" checked="@Model.IncludeInactive" />
+                <span>Include inactive</span>
+            </label>
 
-        <div class="filter-actions">
-            <button class="primary-button" type="submit">
-                <span class="material-symbols-outlined" aria-hidden="true">search</span>
-                <span>Search</span>
-            </button>
-            @if (hasFilters)
-            {
-                <a class="secondary-button" asp-action="Index">
-                    <span class="material-symbols-outlined" aria-hidden="true">close</span>
-                    <span>Clear</span>
+            <div class="filter-actions">
+                <button class="primary-button" type="submit">
+                    <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                    <span>Search</span>
+                </button>
+                @if (hasFilters)
+                {
+                    <a class="secondary-button" asp-action="Index">
+                        <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                        <span>Clear</span>
+                    </a>
+                }
+                <a class="primary-button" asp-action="Create">
+                    <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                    <span>Add Game</span>
                 </a>
-            }
-            <a class="primary-button" asp-action="Create">
-                <span class="material-symbols-outlined" aria-hidden="true">add</span>
-                <span>Add Game</span>
-            </a>
+            </div>
         </div>
     </form>
 </section>

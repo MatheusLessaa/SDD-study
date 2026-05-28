@@ -179,6 +179,29 @@ public class GameRepositoryTests
     }
 
     [Fact]
+    public async Task List_publisher_options_returns_publisher_names_for_dropdown()
+    {
+        await using var dbContext = CreateDbContext();
+        await SeedSupportingDataAsync(dbContext);
+        var repository = new GameRepository(dbContext);
+
+        var result = await repository.ListPublisherOptionsAsync();
+
+        Assert.Collection(
+            result,
+            publisher =>
+            {
+                Assert.Equal(2, publisher.Id);
+                Assert.Equal("Devir", publisher.Name);
+            },
+            publisher =>
+            {
+                Assert.Equal(1, publisher.Id);
+                Assert.Equal("Galapagos", publisher.Name);
+            });
+    }
+
+    [Fact]
     public async Task List_filters_by_publisher()
     {
         await using var dbContext = CreateDbContext();

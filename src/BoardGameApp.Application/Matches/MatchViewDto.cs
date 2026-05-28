@@ -11,8 +11,13 @@ public sealed record MatchViewDto(
     DateTime CreatedAt,
     string GameName = "",
     string PlayerNames = "",
-    string WinnerPlayerName = "")
+    string WinnerPlayerName = "",
+    IReadOnlyList<MatchPlayerScoreDto>? PlayerScores = null)
 {
+    public string CreatedDateDisplay => CreatedAt.ToString("dd/MM/yyyy");
+
+    public IReadOnlyList<MatchPlayerScoreDto> PlayerScoreDetails => PlayerScores ?? [];
+
     public static MatchViewDto FromEntity(Match match)
     {
         return new MatchViewDto(

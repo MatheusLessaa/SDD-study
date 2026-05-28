@@ -1,0 +1,29 @@
+@model CreateAuthorDto
+
+<section class="form-shell">
+    <div class="form-card">
+        <header class="form-card-header">
+            <h2>Add Author</h2>
+            <p>Create an author record for game cataloging.</p>
+        </header>
+
+        <form asp-action="Create" method="post" class="entity-form">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <div class="form-field">
+                <label asp-for="Name">Name</label>
+                <input asp-for="Name" placeholder="Michael Kiesling" autofocus />
+                <span asp-validation-for="Name" class="field-validation"></span>
+            </div>
+
+            <div class="form-actions">
+                <a class="secondary-button" asp-action="Index">Cancel</a>
+                <button class="primary-button" type="submit">
+                    <span class="material-symbols-outlined" aria-hidden="true">person_add</span>
+                    <span>Create Author</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</section>

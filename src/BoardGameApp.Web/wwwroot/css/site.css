@@ -246,17 +246,37 @@ a {
     grid-template-columns: minmax(90px, 0.45fr) minmax(190px, 1fr) minmax(190px, 1fr) minmax(120px, 0.55fr) minmax(140px, 0.65fr);
 }
 
-.games-filters-grid .checkbox-field {
-    grid-column: 1 / 2;
+.games-filter-actions-row {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    grid-column: 1 / -1;
+    justify-content: flex-end;
 }
 
-.games-filters-grid .filter-actions {
-    grid-column: 2 / -1;
+.games-filter-actions-row .filter-actions {
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
     justify-content: flex-start;
 }
 
 .match-filters-grid {
     grid-template-columns: minmax(120px, 0.45fr) minmax(180px, 0.8fr) auto;
+}
+
+.authors-filters-grid {
+    grid-template-columns: minmax(220px, 1fr) auto;
+}
+
+.status-message {
+    border-color: rgba(0, 88, 190, 0.32);
+    margin-bottom: 24px;
+}
+
+.status-message p {
+    color: var(--secondary);
+    font-weight: 700;
 }
 
 .form-field {
@@ -312,6 +332,7 @@ a {
     display: inline-flex;
     gap: 10px;
     min-height: 44px;
+    white-space: nowrap;
 }
 
 .checkbox-field input {
@@ -344,6 +365,7 @@ a {
     align-items: center;
     border-radius: 8px;
     display: inline-flex;
+    font-size: 12px;
     font-weight: 700;
     gap: 8px;
     justify-content: center;
@@ -733,6 +755,35 @@ a {
     outline: none;
 }
 
+.match-details-card {
+    max-width: 860px;
+}
+
+.match-details-summary {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.author-details-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.match-details-section {
+    display: grid;
+    gap: 12px;
+}
+
+.match-details-section h3 {
+    font-size: 18px;
+    line-height: 1.3;
+    margin: 0;
+}
+
+.details-table-shell {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
 .modal-backdrop {
     align-items: center;
     background: rgba(0, 0, 0, 0.52);
@@ -760,6 +811,35 @@ a {
     max-width: 560px;
     overflow: hidden;
     width: 100%;
+}
+
+.modal-card.match-details-modal {
+    max-width: 900px;
+}
+
+.match-details-modal-body {
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.match-details-content {
+    display: grid;
+    gap: 24px;
+}
+
+.match-details-content .form-card-header {
+    margin-bottom: 0;
+}
+
+.modal-loading {
+    color: var(--muted);
+    font-weight: 700;
+    padding: 24px;
+    text-align: center;
+}
+
+.modal-loading.error {
+    color: #ba1a1a;
 }
 
 .modal-header,
@@ -888,6 +968,7 @@ a {
     }
 
     .games-filters-grid,
+    .authors-filters-grid,
     .match-filters-grid,
     .match-create-grid,
     .locked-match-summary,
@@ -905,9 +986,14 @@ a {
         grid-template-columns: 1fr;
     }
 
-    .games-filters-grid .checkbox-field,
-    .games-filters-grid .filter-actions {
+    .games-filter-actions-row {
+        align-items: stretch;
+        flex-direction: column;
         grid-column: auto;
+    }
+
+    .games-filter-actions-row .checkbox-field {
+        justify-content: flex-start;
     }
 
     .filter-actions .primary-button,

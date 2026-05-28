@@ -26,14 +26,14 @@ public sealed class MatchController : Controller
     [HttpGet]
     public async Task<IActionResult> Index(
         int? id,
-        int? gameId,
+        string? gameName,
         int page = 1,
         CancellationToken cancellationToken = default)
     {
         SetMatchesNavigation("Matches");
 
         var matches = await matchService.ListAsync(
-            new MatchFilter(id, gameId),
+            new MatchFilter(id, gameName),
             page,
             cancellationToken);
 
@@ -41,7 +41,7 @@ public sealed class MatchController : Controller
         {
             Matches = matches,
             Id = id,
-            GameId = gameId
+            GameName = gameName
         });
     }
 
@@ -51,6 +51,23 @@ public sealed class MatchController : Controller
         SetMatchesNavigation("Create Match");
 
         return View(await BuildCreateViewModelAsync(new MatchCreateViewModel(), cancellationToken));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Details(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        SetMatchesNavigation("Match Details");
+
+        var match = await matchService.GetByIdAsync(id, cancellationToken);
+
+        if (match is null)
+        {
+            return NotFound();
+        }
+
+        return PartialView("_Details", match);
     }
 
     [HttpPost]

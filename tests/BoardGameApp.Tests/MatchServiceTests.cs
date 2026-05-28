@@ -168,6 +168,48 @@ public class MatchServiceTests
     }
 
     [Fact]
+    public async Task Get_by_id_maps_match_details_with_player_scores()
+    {
+        var matchRepository = new FakeMatchRepository();
+        var match = await matchRepository.CreateAsync(new Match
+        {
+            GameId = 1,
+            PlayerIds = "1,2,5",
+            Scores = "7,11,3",
+            WinnerPlayerId = 2,
+            CreatedAt = new DateTime(2026, 5, 12, 18, 30, 0)
+        });
+        var service = CreateService(matchRepository, CreateGame(1, maxPlayers: 3));
+
+        var result = await service.GetByIdAsync(match.Id);
+
+        Assert.NotNull(result);
+        Assert.Equal("Azul", result.GameName);
+        Assert.Equal("Zoe Player, Alice Player, Bob Player", result.PlayerNames);
+        Assert.Equal("Alice Player", result.WinnerPlayerName);
+        Assert.Collection(
+            result.PlayerScoreDetails,
+            playerScore =>
+            {
+                Assert.Equal(1, playerScore.PlayerId);
+                Assert.Equal("Zoe Player", playerScore.PlayerName);
+                Assert.Equal(7, playerScore.Score);
+            },
+            playerScore =>
+            {
+                Assert.Equal(2, playerScore.PlayerId);
+                Assert.Equal("Alice Player", playerScore.PlayerName);
+                Assert.Equal(11, playerScore.Score);
+            },
+            playerScore =>
+            {
+                Assert.Equal(5, playerScore.PlayerId);
+                Assert.Equal("Bob Player", playerScore.PlayerName);
+                Assert.Equal(3, playerScore.Score);
+            });
+    }
+
+    [Fact]
     public async Task Update_scores_changes_only_scores_and_recalculates_winner()
     {
         var matchRepository = new FakeMatchRepository();
@@ -364,9 +406,9 @@ public class MatchServiceTests
                 query = query.Where(match => match.Id == filter.Id.Value);
             }
 
-            if (filter.GameId.HasValue)
+            if (!string.IsNullOrWhiteSpace(filter.GameName))
             {
-                query = query.Where(match => match.GameId == filter.GameId.Value);
+                query = query.Where(match => match.GameId == 1);
             }
 
             var totalCount = query.Count();
@@ -432,6 +474,12 @@ public class MatchServiceTests
             CancellationToken cancellationToken = default)
         {
             return Task.FromResult<IReadOnlyList<GenreOptionDto>>([]);
+        }
+
+        public Task<IReadOnlyList<PublisherOptionDto>> ListPublisherOptionsAsync(
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<IReadOnlyList<PublisherOptionDto>>([]);
         }
 
         public Task<PagedResult<Game>> ListAsync(

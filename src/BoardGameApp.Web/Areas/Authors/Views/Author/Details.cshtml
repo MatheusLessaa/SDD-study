@@ -1,0 +1,29 @@
+@model AuthorViewDto
+
+<section class="form-shell">
+    <div class="form-card compact-card">
+        <header class="form-card-header">
+            <h2>@Model.Name</h2>
+            <p>Read-only author details.</p>
+        </header>
+
+        <dl class="locked-match-summary author-details-summary">
+            <div>
+                <dt>Code</dt>
+                <dd>#@Model.Id</dd>
+            </div>
+            <div>
+                <dt>Name</dt>
+                <dd>@Model.Name</dd>
+            </div>
+        </dl>
+
+        <div class="form-actions">
+            <a class="secondary-button" asp-action="Index">Back</a>
+            <a class="primary-button" asp-action="Edit" asp-route-id="@Model.Id">
+                <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                <span>Edit Author</span>
+            </a>
+        </div>
+    </div>
+</section>
